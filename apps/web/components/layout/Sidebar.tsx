@@ -16,7 +16,6 @@ import {
   Scale,
   AlertTriangle,
   RefreshCw,
-  Landmark,
   LogOut,
 } from 'lucide-react'
 
@@ -133,7 +132,27 @@ export default function Sidebar() {
         <Divider />
 
         {/* Maze Bank */}
-        <NavItem href="/maze-bank" label="Maze Bank" Icon={Landmark} />
+        {/* Maze Bank — custom icon */}
+        <Link
+          href="/maze-bank"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 10,
+            padding: '8px 12px',
+            borderRadius: 8,
+            fontSize: 14,
+            textDecoration: 'none',
+            background: 'transparent',
+            color: 'var(--text-secondary)',
+            transition: 'all 0.12s',
+          }}
+          onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--bg-elevated)'; e.currentTarget.style.color = 'var(--text-primary)' }}
+          onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--text-secondary)' }}
+        >
+          <img src="/logos/maze-bank-icon.png" alt="Maze Bank" style={{ width: 16, height: 16, objectFit: 'contain', flexShrink: 0 }} />
+          Maze Bank
+        </Link>
       </nav>
 
       {/* Bottom — user + resync + logout */}

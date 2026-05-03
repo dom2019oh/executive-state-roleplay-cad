@@ -31,14 +31,17 @@ export default function MazeBankLayout({ children }: { children: React.ReactNode
         gap: 16,
       }}>
         {/* Logo */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginRight: 8 }}>
-          <MazeBankLogo size={32} />
-        </div>
+        {/* Real Maze Bank logo */}
+        <img
+          src="/logos/maze-bank-dark.png"
+          alt="Maze Bank"
+          style={{ height: 40, objectFit: 'contain', marginRight: 8 }}
+        />
 
         {/* Divider */}
         <div style={{ width: 1, height: 28, background: '#333' }} />
 
-        {/* Title */}
+        {/* Section title */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <span style={{ fontSize: 14, fontWeight: 600, color: '#fff' }}>My Accounts</span>
         </div>
@@ -77,17 +80,5 @@ export default function MazeBankLayout({ children }: { children: React.ReactNode
         {children}
       </div>
     </div>
-  )
-}
-
-function MazeBankLogo({ size }: { size: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 40 40" fill="none">
-      <rect width="40" height="40" rx="4" fill="#1a1a1a" />
-      <rect x="8" y="8" width="6" height="24" fill="white" />
-      <rect x="17" y="8" width="6" height="24" fill="white" />
-      <rect x="26" y="8" width="6" height="24" fill="white" />
-      <rect x="8" y="8" width="24" height="4" fill="white" />
-    </svg>
   )
 }
