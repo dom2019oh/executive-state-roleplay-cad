@@ -1,20 +1,22 @@
 @import "tailwindcss";
 
 :root {
-  --bg-base: #0d0f12;
-  --bg-surface: #13161b;
-  --bg-elevated: #1a1d24;
-  --bg-hover: #1f232c;
-  --border: #2a2d36;
-  --border-subtle: #1e2128;
+  --bg-base: #0d0e11;
+  --bg-surface: #14171e;
+  --bg-elevated: #1a1d26;
+  --bg-input: #1e2230;
+  --bg-hover: #1e2230;
+  --border: #252a38;
+  --border-subtle: #252a38;
   --text-primary: #f0f2f5;
-  --text-secondary: #8b949e;
-  --text-muted: #555d69;
+  --text-secondary: #8892a4;
+  --text-muted: #4a5166;
   --accent: #3b82f6;
   --accent-hover: #2563eb;
   --success: #22c55e;
   --warning: #f59e0b;
   --danger: #ef4444;
+  --purple: #7c3aed;
 }
 
 * { box-sizing: border-box; }
@@ -34,11 +36,11 @@ html, body {
 ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 
 input, textarea, select {
-  background: var(--bg-elevated);
+  background: var(--bg-input);
   border: 1px solid var(--border);
   color: var(--text-primary);
-  border-radius: 6px;
-  padding: 8px 12px;
+  border-radius: 8px;
+  padding: 10px 12px;
   width: 100%;
   outline: none;
   transition: border-color 0.15s;
@@ -46,12 +48,13 @@ input, textarea, select {
 }
 input:focus, textarea:focus, select:focus { border-color: var(--accent); }
 input::placeholder, textarea::placeholder { color: var(--text-muted); }
+select option { background: var(--bg-input); }
 
 button { cursor: pointer; border: none; border-radius: 6px; font-size: 13px; font-weight: 500; transition: all 0.15s; }
 
 .card {
   background: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
+  border: 1px solid var(--border);
   border-radius: 10px;
   padding: 16px;
 }
@@ -67,17 +70,23 @@ button { cursor: pointer; border: none; border-radius: 6px; font-size: 13px; fon
   text-transform: uppercase;
 }
 
-.divider { border: none; border-top: 1px solid var(--border-subtle); margin: 12px 0; }
+.divider { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
 
 table { width: 100%; border-collapse: collapse; }
 th {
   text-align: left; padding: 10px 12px;
   font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
-  color: var(--text-muted); border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-muted); border-bottom: 1px solid var(--border);
 }
-td { padding: 10px 12px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
+td { padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--text-secondary); }
 tr:last-child td { border-bottom: none; }
 tr:hover td { background: var(--bg-elevated); color: var(--text-primary); }
 
-.section-title { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
-.page-title { font-size: 20px; font-weight: 600; color: var(--text-primary); }
+.section-title { font-size: 15px; font-weight: 600; color: var(--text-primary); margin-bottom: 8px; }
+.page-title { font-size: 24px; font-weight: 700; color: var(--text-primary); }
+
+@keyframes pulse-danger {
+  0%, 100% { box-shadow: 0 0 8px var(--danger), 0 0 16px var(--danger); }
+  50% { box-shadow: 0 0 20px var(--danger), 0 0 40px var(--danger); }
+}
+.pulse-danger { animation: pulse-danger 1.5s infinite; }

@@ -3,7 +3,7 @@
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/auth-context'
-import Sidebar from '@/components/layout/Sidebar'
+import TopNav from '@/components/layout/TopNav'
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth()
@@ -26,9 +26,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   if (!user) return null
 
   return (
-    <div className="flex min-h-screen">
-      <Sidebar />
-      <main className="flex-1 overflow-y-auto p-6" style={{ background: 'var(--bg-base)' }}>
+    <div className="min-h-screen flex flex-col">
+      <TopNav />
+      <main className="flex-1 p-6" style={{ background: 'var(--bg-base)' }}>
         {children}
       </main>
     </div>

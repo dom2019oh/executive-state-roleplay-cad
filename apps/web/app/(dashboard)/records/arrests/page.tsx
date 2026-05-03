@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { api } from '@/lib/api'
 import Link from 'next/link'
+import { Plus } from 'lucide-react'
 
 export default function ArrestsPage() {
   const [arrests, setArrests] = useState<any[]>([])
@@ -13,42 +14,78 @@ export default function ArrestsPage() {
   }, [])
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <h1 className="page-title">Arrests</h1>
-        <Link href="/records/arrests/new" className="py-2 px-4 rounded-lg font-semibold text-sm text-white" style={{ background: 'var(--accent)' }}>
-          + New Arrest
+        <Link
+          href="/records/arrests/new"
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 6,
+            padding: '8px 16px',
+            borderRadius: 8,
+            background: 'var(--success)',
+            color: '#fff',
+            fontSize: 13,
+            fontWeight: 600,
+            textDecoration: 'none',
+          }}
+        >
+          <Plus size={14} />
+          New Arrest Report
         </Link>
       </div>
-      <div className="card">
+
+      <div
+        style={{
+          background: 'var(--bg-surface)',
+          border: '1px solid var(--border)',
+          borderRadius: 10,
+          overflow: 'hidden',
+        }}
+      >
         {loading ? (
-          <div style={{ color: 'var(--text-muted)' }}>Loading…</div>
+          <div style={{ padding: 32, color: 'var(--text-muted)', textAlign: 'center' }}>Loading…</div>
         ) : arrests.length === 0 ? (
-          <div style={{ color: 'var(--text-muted)', textAlign: 'center', padding: '32px 0' }}>No arrest records.</div>
-        ) : (
-          <div className="table-wrapper">
-            <table>
-              <thead>
-                <tr>
-                  <th>Number</th><th>Location</th><th>Charges</th><th>Total Fine</th><th>Status</th><th>Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                {arrests.map((a) => (
-                  <tr key={a.id}>
-                    <td className="font-mono font-semibold" style={{ color: 'var(--text-primary)' }}>{a.arrestNumber}</td>
-                    <td>{a.location}</td>
-                    <td>{a.charges?.length ?? 0} charge{a.charges?.length !== 1 ? 's' : ''}</td>
-                    <td>${a.totalFine?.toLocaleString()}</td>
-                    <td>
-                      <span className="badge" style={{ background: 'var(--bg-elevated)', color: 'var(--text-secondary)' }}>{a.status}</span>
-                    </td>
-                    <td>{new Date(a.arrestDate).toLocaleDateString()}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div style={{ padding: '48px 0', color: 'var(--text-muted)', textAlign: 'center', fontSize: 13 }}>
+            No arrest records.
           </div>
+        ) : (
+          <table>
+            <thead>
+              <tr>
+                <th>Number</th><th>Location</th><th>Charges</th><th>Total Fine</th><th>Status</th><th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {arrests.map((a) => (
+                <tr key={a.id}>
+                  <td style={{ fontFamily: 'monospace', fontWeight: 600, color: 'var(--text-primary)' }}>{a.arrestNumber}</td>
+                  <td>{a.location}</td>
+                  <td>{a.charges?.length ?? 0} charge{a.charges?.length !== 1 ? 's' : ''}</td>
+                  <td>${a.totalFine?.toLocaleString()}</td>
+                  <td>
+                    <span style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      padding: '2px 8px',
+                      borderRadius: 4,
+                      fontSize: 11,
+                      fontWeight: 600,
+                      textTransform: 'uppercase',
+                      background: 'var(--bg-elevated)',
+                      color: 'var(--text-secondary)',
+                      border: '1px solid var(--border)',
+                    }}>
+                      {a.status}
+                    </span>
+                  </td>
+                  <td>{new Date(a.arrestDate).toLocaleDateString()}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         )}
       </div>
     </div>

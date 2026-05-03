@@ -2,7 +2,7 @@
 
 import { useState, useRef } from 'react'
 import { api } from '@/lib/api'
-import { User, Car, X, ChevronRight } from 'lucide-react'
+import { User, Car, X, ChevronRight, AlertTriangle, MoreVertical } from 'lucide-react'
 
 interface Civilian {
   id: string
@@ -67,12 +67,13 @@ export default function SearchPage() {
       const data = await api.get<FullProfile>(`/civilians/${id}`)
       setSelected(data)
       setResults(null)
+      setQuery('')
     } catch {}
     setLoading(false)
   }
 
   return (
-    <div className="flex flex-col gap-6 max-w-4xl">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20, maxWidth: 900 }}>
       <div>
         <h1 className="page-title">Records Search</h1>
         <p style={{ color: 'var(--text-muted)', fontSize: 13, marginTop: 4 }}>
@@ -80,14 +81,36 @@ export default function SearchPage() {
         </p>
       </div>
 
-      <div className="card flex flex-col gap-3">
-        <div className="flex gap-2">
+      {/* Search bar */}
+      <div
+        style={{
+          background: 'var(--bg-surface)',
+          border: '1px solid var(--border)',
+          borderRadius: 10,
+          padding: 16,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 12,
+        }}
+      >
+        <div style={{ display: 'flex', gap: 8 }}>
           {(['all', 'person', 'vehicle'] as const).map((t) => (
             <button
               key={t}
               onClick={() => setType(t)}
-              className="flex items-center gap-1 px-3 py-1 rounded text-xs font-semibold transition-all"
-              style={{ background: type === t ? 'var(--accent)' : 'var(--bg-elevated)', color: type === t ? '#fff' : 'var(--text-secondary)' }}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 4,
+                padding: '5px 12px',
+                borderRadius: 6,
+                fontSize: 12,
+                fontWeight: 600,
+                background: type === t ? 'var(--accent)' : 'var(--bg-elevated)',
+                color: type === t ? '#fff' : 'var(--text-secondary)',
+                border: '1px solid ' + (type === t ? 'var(--accent)' : 'var(--border)'),
+                cursor: 'pointer',
+              }}
             >
               {t === 'person' && <User size={11} />}
               {t === 'vehicle' && <Car size={11} />}
@@ -107,17 +130,28 @@ export default function SearchPage() {
         {loading && <div style={{ color: 'var(--text-muted)', fontSize: 13 }}>Searching…</div>}
 
         {results && !loading && (
-          <div className="flex flex-col gap-1">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
             {results.civilians.map((c) => (
               <button
                 key={c.id}
                 onClick={() => selectCivilian(c.id)}
-                className="flex items-center justify-between px-3 py-2 rounded-lg text-left transition-all"
-                style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)' }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '10px 14px',
+                  borderRadius: 8,
+                  background: 'var(--bg-elevated)',
+                  border: '1px solid var(--border)',
+                  cursor: 'pointer',
+                  textAlign: 'left',
+                  transition: 'all 0.15s',
+                  width: '100%',
+                }}
                 onMouseEnter={(e) => (e.currentTarget.style.borderColor = 'var(--accent)')}
-                onMouseLeave={(e) => (e.currentTarget.style.borderColor = 'var(--border-subtle)')}
+                onMouseLeave={(e) => (e.currentTarget.style.borderColor = 'var(--border)')}
               >
-                <div className="flex items-center gap-3">
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                   <User size={14} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
                   <div>
                     <div style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: 13 }}>
@@ -128,9 +162,9 @@ export default function SearchPage() {
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-1">
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                   {c.flags?.map((f) => (
-                    <span key={f} className="badge" style={{ background: '#3f1414', color: '#fca5a5' }}>{f}</span>
+                    <span key={f} style={{ padding: '2px 7px', borderRadius: 4, fontSize: 10, fontWeight: 700, background: '#3f1414', color: '#fca5a5', textTransform: 'uppercase' }}>{f}</span>
                   ))}
                   <ChevronRight size={13} style={{ color: 'var(--text-muted)' }} />
                 </div>
@@ -141,12 +175,23 @@ export default function SearchPage() {
               <button
                 key={v.id}
                 onClick={() => v.owner && selectCivilian(v.owner.id)}
-                className="flex items-center justify-between px-3 py-2 rounded-lg text-left transition-all"
-                style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)' }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '10px 14px',
+                  borderRadius: 8,
+                  background: 'var(--bg-elevated)',
+                  border: '1px solid var(--border)',
+                  cursor: 'pointer',
+                  textAlign: 'left',
+                  transition: 'all 0.15s',
+                  width: '100%',
+                }}
                 onMouseEnter={(e) => (e.currentTarget.style.borderColor = 'var(--accent)')}
-                onMouseLeave={(e) => (e.currentTarget.style.borderColor = 'var(--border-subtle)')}
+                onMouseLeave={(e) => (e.currentTarget.style.borderColor = 'var(--border)')}
               >
-                <div className="flex items-center gap-3">
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                   <Car size={14} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
                   <div>
                     <div style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: 13, fontFamily: 'monospace' }}>
@@ -158,13 +203,15 @@ export default function SearchPage() {
                     </div>
                   </div>
                 </div>
-                <span
-                  className="badge"
-                  style={{
-                    background: v.registrationStatus === 'valid' ? '#16a34a22' : '#3f1414',
-                    color: v.registrationStatus === 'valid' ? 'var(--success)' : 'var(--danger)',
-                  }}
-                >
+                <span style={{
+                  padding: '2px 8px',
+                  borderRadius: 4,
+                  fontSize: 11,
+                  fontWeight: 700,
+                  background: v.registrationStatus === 'valid' ? '#16a34a22' : '#3f1414',
+                  color: v.registrationStatus === 'valid' ? 'var(--success)' : 'var(--danger)',
+                  textTransform: 'uppercase',
+                }}>
                   {v.registrationStatus}
                 </span>
               </button>
@@ -186,142 +233,313 @@ export default function SearchPage() {
 
 function ProfileView({ profile, onClose }: { profile: FullProfile; onClose: () => void }) {
   const c = profile.civilian
-  const [tab, setTab] = useState<'info' | 'warrants' | 'citations' | 'arrests' | 'vehicles'>('info')
-  const tabs = [
-    { id: 'info', label: 'Info' },
-    { id: 'warrants', label: `Warrants (${profile.warrants.length})` },
-    { id: 'citations', label: `Citations (${profile.citations.length})` },
-    { id: 'arrests', label: `Arrests (${profile.arrests.length})` },
-    { id: 'vehicles', label: `Vehicles (${profile.vehicles.length})` },
-  ] as const
-
   const activeWarrants = profile.warrants.filter((w) => w.status === 'active')
+  const dob = c.dateOfBirth ? new Date(c.dateOfBirth) : null
+  const age = dob ? (() => {
+    const now = new Date()
+    let a = now.getFullYear() - dob.getFullYear()
+    const m = now.getMonth() - dob.getMonth()
+    if (m < 0 || (m === 0 && now.getDate() < dob.getDate())) a--
+    return a
+  })() : null
 
   return (
-    <div className="card flex flex-col gap-4">
-      <div className="flex items-start justify-between">
-        <div className="flex items-center gap-3">
-          <div
-            className="w-14 h-14 rounded-lg flex items-center justify-center text-xl font-bold"
-            style={{ background: 'var(--bg-elevated)', color: 'var(--text-muted)' }}
-          >
-            {c.firstName?.[0]}{c.lastName?.[0]}
-          </div>
+    <div
+      style={{
+        background: 'var(--bg-surface)',
+        border: '1px solid var(--border)',
+        borderRadius: 10,
+        overflow: 'hidden',
+      }}
+    >
+      {/* Header */}
+      <div style={{ padding: '20px 20px 16px', borderBottom: '1px solid var(--border)' }}>
+        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
           <div>
-            <div style={{ fontSize: 20, fontWeight: 700, color: 'var(--text-primary)' }}>
+            <div style={{ fontSize: 22, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 4 }}>
               {c.firstName} {c.lastName}
-            </div>
-            <div style={{ color: 'var(--text-muted)', fontSize: 12 }}>
-              DOB {new Date(c.dateOfBirth).toLocaleDateString()} · {c.gender} · {c.ethnicity}
-            </div>
-            <div className="flex gap-1 mt-1">
               {activeWarrants.length > 0 && (
-                <span className="badge" style={{ background: '#3f1414', color: '#fca5a5' }}>
+                <span style={{
+                  marginLeft: 12,
+                  padding: '2px 8px',
+                  borderRadius: 4,
+                  fontSize: 11,
+                  fontWeight: 700,
+                  background: '#3f1414',
+                  color: '#ef4444',
+                  textTransform: 'uppercase',
+                  verticalAlign: 'middle',
+                }}>
                   {activeWarrants.length} ACTIVE WARRANT{activeWarrants.length !== 1 ? 'S' : ''}
                 </span>
               )}
-              {c.flags?.map((f: string) => (
-                <span key={f} className="badge" style={{ background: '#3f1414', color: '#fca5a5' }}>{f}</span>
-              ))}
+            </div>
+
+            {/* Info row — 3 columns */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, auto)', gap: '4px 28px', fontSize: 13 }}>
+              <span style={{ color: 'var(--text-secondary)' }}>
+                <strong style={{ color: 'var(--text-primary)' }}>DOB:</strong>{' '}
+                {dob ? dob.toLocaleDateString() : '—'}
+              </span>
+              {age !== null && (
+                <span style={{ color: 'var(--text-secondary)' }}>
+                  <strong style={{ color: 'var(--text-primary)' }}>Age:</strong> {age}
+                </span>
+              )}
+              <span style={{ color: 'var(--text-secondary)' }}>
+                <strong style={{ color: 'var(--text-primary)' }}>Sex:</strong> {c.gender || '—'}
+              </span>
+              <span style={{ color: 'var(--text-secondary)' }}>
+                <strong style={{ color: 'var(--text-primary)' }}>Hair:</strong> {c.hairColor || '—'}
+              </span>
+              <span style={{ color: 'var(--text-secondary)' }}>
+                <strong style={{ color: 'var(--text-primary)' }}>Eyes:</strong> {c.eyeColor || '—'}
+              </span>
+              <span style={{ color: 'var(--text-secondary)' }}>
+                <strong style={{ color: 'var(--text-primary)' }}>Height:</strong> {c.height || '—'}
+              </span>
+              <span style={{ color: 'var(--text-secondary)' }}>
+                <strong style={{ color: 'var(--text-primary)' }}>Weight:</strong> {c.weight || '—'}
+              </span>
+              <span style={{ color: 'var(--text-secondary)' }}>
+                <strong style={{ color: 'var(--text-primary)' }}>Skin Tone:</strong> {c.ethnicity || '—'}
+              </span>
+              <span style={{ color: 'var(--text-secondary)' }}>
+                <strong style={{ color: 'var(--text-primary)' }}>Occupation:</strong> {c.occupation || '—'}
+              </span>
             </div>
           </div>
+
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button
+              style={{
+                width: 32,
+                height: 32,
+                borderRadius: 6,
+                background: 'var(--bg-elevated)',
+                border: '1px solid var(--border)',
+                color: 'var(--text-muted)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+              }}
+            >
+              <MoreVertical size={14} />
+            </button>
+            <button
+              onClick={onClose}
+              style={{
+                width: 32,
+                height: 32,
+                borderRadius: 6,
+                background: 'var(--bg-elevated)',
+                border: '1px solid var(--border)',
+                color: 'var(--text-muted)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+              }}
+            >
+              <X size={14} />
+            </button>
+          </div>
         </div>
+      </div>
+
+      {/* Section cards */}
+      <div style={{ padding: 16, display: 'flex', flexDirection: 'column', gap: 12 }}>
+
+        {/* Licenses */}
+        <SectionCard
+          title="Licenses"
+          action={
+            <button style={{
+              padding: '5px 12px',
+              borderRadius: 6,
+              background: '#7c3aed22',
+              border: '1px solid #7c3aed55',
+              color: '#7c3aed',
+              fontSize: 12,
+              fontWeight: 600,
+              cursor: 'pointer',
+            }}>
+              DMV Exam
+            </button>
+          }
+        >
+          {c.driversLicense ? (
+            <div style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
+              <strong style={{ color: 'var(--text-primary)' }}>Driver's License:</strong>{' '}
+              Class {c.driversLicense.class} — #{c.driversLicense.number} —{' '}
+              <span style={{ color: c.driversLicense.status === 'valid' ? 'var(--success)' : 'var(--danger)', fontWeight: 600 }}>
+                {c.driversLicense.status}
+              </span>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--warning)', fontSize: 13 }}>
+              <AlertTriangle size={13} />
+              No licenses on file
+            </div>
+          )}
+        </SectionCard>
+
+        {/* Vehicles */}
+        <SectionCard
+          title="Vehicles"
+          action={
+            <button style={{
+              padding: '5px 12px',
+              borderRadius: 6,
+              background: '#3b82f622',
+              border: '1px solid #3b82f655',
+              color: 'var(--accent)',
+              fontSize: 12,
+              fontWeight: 600,
+              cursor: 'pointer',
+            }}>
+              Add Vehicle
+            </button>
+          }
+        >
+          {profile.vehicles.length === 0 ? (
+            <em style={{ color: 'var(--text-muted)', fontSize: 13 }}>No vehicles registered yet.</em>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              {profile.vehicles.map((v) => (
+                <div key={v.id} style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
+                  <span style={{ fontFamily: 'monospace', fontWeight: 700, color: 'var(--text-primary)' }}>{v.plate}</span>
+                  {' — '}{v.year} {v.make} {v.model} · {v.color} ·{' '}
+                  <span style={{ color: v.registrationStatus === 'valid' ? 'var(--success)' : 'var(--danger)', fontWeight: 600 }}>
+                    {v.registrationStatus}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </SectionCard>
+
+        {/* Weapons */}
+        <SectionCard
+          title="Weapons"
+          action={
+            <button style={{
+              padding: '5px 12px',
+              borderRadius: 6,
+              background: '#ef444422',
+              border: '1px solid #ef444455',
+              color: 'var(--danger)',
+              fontSize: 12,
+              fontWeight: 600,
+              cursor: 'pointer',
+            }}>
+              Add Weapon
+            </button>
+          }
+        >
+          {c.weaponLicense ? (
+            <div style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
+              <strong style={{ color: 'var(--text-primary)' }}>Weapon License:</strong>{' '}
+              <span style={{ color: c.weaponLicense.status === 'valid' ? 'var(--success)' : 'var(--danger)', fontWeight: 600 }}>
+                {c.weaponLicense.status}
+              </span>
+            </div>
+          ) : (
+            <em style={{ color: 'var(--text-muted)', fontSize: 13 }}>No weapons registered yet.</em>
+          )}
+        </SectionCard>
+
+        {/* Records */}
+        <SectionCard title="Records">
+          <div style={{ display: 'flex', gap: 24, fontSize: 13, color: 'var(--text-secondary)' }}>
+            <span><em>Tickets:</em> {profile.citations.length}</span>
+            <span><em>Written Warnings:</em> 0</span>
+            <span><em>Arrest Reports:</em> {profile.arrests.length}</span>
+          </div>
+        </SectionCard>
+
+        {/* Warrants — only if exist */}
+        {profile.warrants.length > 0 && (
+          <SectionCard
+            title="Warrants"
+            action={
+              activeWarrants.length > 0 ? (
+                <span style={{
+                  padding: '3px 10px',
+                  borderRadius: 4,
+                  fontSize: 11,
+                  fontWeight: 700,
+                  background: '#3f1414',
+                  color: '#ef4444',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.04em',
+                }}>
+                  ACTIVE
+                </span>
+              ) : undefined
+            }
+          >
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              {profile.warrants.map((w) => (
+                <div key={w.id} style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
+                  <span style={{ fontFamily: 'monospace', fontWeight: 700, color: 'var(--text-primary)' }}>{w.warrantNumber}</span>
+                  {' — '}{w.type} · {w.reason} ·{' '}
+                  <span style={{ color: w.status === 'active' ? 'var(--danger)' : 'var(--text-muted)', fontWeight: 600 }}>
+                    {w.status}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </SectionCard>
+        )}
+      </div>
+
+      {/* Footer */}
+      <div style={{ padding: '12px 20px', borderTop: '1px solid var(--border)', display: 'flex', justifyContent: 'flex-end' }}>
         <button
           onClick={onClose}
-          className="flex items-center justify-center w-7 h-7 rounded"
-          style={{ color: 'var(--text-muted)', background: 'var(--bg-elevated)' }}
+          style={{
+            padding: '8px 20px',
+            borderRadius: 8,
+            background: 'var(--bg-elevated)',
+            border: '1px solid var(--border)',
+            color: 'var(--text-secondary)',
+            fontSize: 13,
+            fontWeight: 500,
+            cursor: 'pointer',
+          }}
         >
-          <X size={14} />
+          Close
         </button>
       </div>
+    </div>
+  )
+}
 
-      <div className="flex gap-1 flex-wrap">
-        {tabs.map((t) => (
-          <button
-            key={t.id}
-            onClick={() => setTab(t.id as any)}
-            className="px-3 py-1 rounded text-xs font-semibold transition-all"
-            style={{ background: tab === t.id ? 'var(--accent)' : 'var(--bg-elevated)', color: tab === t.id ? '#fff' : 'var(--text-secondary)' }}
-          >
-            {t.label}
-          </button>
-        ))}
+function SectionCard({
+  title,
+  action,
+  children,
+}: {
+  title: string
+  action?: React.ReactNode
+  children: React.ReactNode
+}) {
+  return (
+    <div
+      style={{
+        background: 'var(--bg-elevated)',
+        border: '1px solid var(--border)',
+        borderRadius: 8,
+        padding: 14,
+      }}
+    >
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+        <span style={{ fontSize: 15, fontWeight: 600, color: 'var(--text-primary)' }}>{title}</span>
+        {action}
       </div>
-
-      {tab === 'info' && (
-        <div className="grid grid-cols-3 gap-3">
-          <Info label="Address" value={c.address || '—'} />
-          <Info label="Phone" value={c.phone || '—'} />
-          <Info label="Occupation" value={c.occupation || '—'} />
-          <Info label="Height" value={c.height || '—'} />
-          <Info label="Weight" value={c.weight || '—'} />
-          <Info label="Eye Color" value={c.eyeColor || '—'} />
-          <Info label="Hair Color" value={c.hairColor || '—'} />
-          <Info label="DL Class" value={c.driversLicense?.class || '—'} />
-          <Info label="DL Status" value={c.driversLicense?.status || '—'} />
-          <Info label="DL Number" value={c.driversLicense?.number || '—'} />
-          <Info label="Weapon License" value={c.weaponLicense?.status || 'none'} />
-        </div>
-      )}
-
-      {tab === 'warrants' && (
-        <RecordTable
-          headers={['Number', 'Type', 'Reason', 'Status', 'Issued']}
-          rows={profile.warrants.map((w) => [
-            w.warrantNumber, w.type, w.reason,
-            <span className="badge" style={{ background: w.status === 'active' ? '#3f1414' : 'var(--bg-elevated)', color: w.status === 'active' ? 'var(--danger)' : 'var(--text-muted)' }}>{w.status}</span>,
-            new Date(w.issuedAt).toLocaleDateString(),
-          ])}
-        />
-      )}
-
-      {tab === 'citations' && (
-        <RecordTable
-          headers={['Number', 'Type', 'Location', 'Fine', 'Status', 'Date']}
-          rows={profile.citations.map((c) => [c.citationNumber, c.type, c.location, `$${c.totalFine?.toLocaleString()}`, c.status, new Date(c.createdAt).toLocaleDateString()])}
-        />
-      )}
-
-      {tab === 'arrests' && (
-        <RecordTable
-          headers={['Number', 'Location', 'Charges', 'Fine', 'Status', 'Date']}
-          rows={profile.arrests.map((a) => [a.arrestNumber, a.location, `${a.charges?.length ?? 0} charge${a.charges?.length !== 1 ? 's' : ''}`, `$${a.totalFine?.toLocaleString()}`, a.status, new Date(a.arrestDate).toLocaleDateString()])}
-        />
-      )}
-
-      {tab === 'vehicles' && (
-        <RecordTable
-          headers={['Plate', 'Vehicle', 'Color', 'Registration', 'Insurance']}
-          rows={profile.vehicles.map((v) => [<span className="font-mono font-semibold">{v.plate}</span>, `${v.year} ${v.make} ${v.model}`, v.color, v.registrationStatus, v.insurance?.status ?? 'unknown'])}
-        />
-      )}
-    </div>
-  )
-}
-
-function Info({ label, value }: { label: string; value: string }) {
-  return (
-    <div>
-      <div className="section-title">{label}</div>
-      <div style={{ fontSize: 13, color: 'var(--text-primary)' }}>{value}</div>
-    </div>
-  )
-}
-
-function RecordTable({ headers, rows }: { headers: string[]; rows: (string | React.ReactNode)[][] }) {
-  if (rows.length === 0) {
-    return <div style={{ color: 'var(--text-muted)', fontSize: 13, textAlign: 'center', padding: '16px 0' }}>No records.</div>
-  }
-  return (
-    <div className="table-wrapper">
-      <table>
-        <thead><tr>{headers.map((h) => <th key={h}>{h}</th>)}</tr></thead>
-        <tbody>
-          {rows.map((row, i) => (
-            <tr key={i}>{row.map((cell, j) => <td key={j}>{cell}</td>)}</tr>
-          ))}
-        </tbody>
-      </table>
+      {children}
     </div>
   )
 }
