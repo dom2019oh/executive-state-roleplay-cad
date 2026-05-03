@@ -87,8 +87,8 @@ export default function CadPage() {
 
   const fetchActive = useCallback(async () => {
     try {
-      const data = await api.get<{ officers: ActiveOfficer[] }>('/officers/active')
-      setActiveOfficers(data.officers)
+      const data = await api.get<{ units: ActiveOfficer[] }>('/officers/active')
+      setActiveOfficers(data.units ?? [])
     } catch {}
   }, [])
 
