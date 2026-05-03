@@ -3,21 +3,18 @@
 
 
 import { useAuth } from '@/lib/auth-context'
-import { useParams, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import Link from 'next/link'
 
 export default function MazeBankLayout({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth()
-  const params = useParams()
   const router = useRouter()
 
   useEffect(() => {
     if (loading) return
     if (!user) router.replace('/login')
-    // Only the owner can view their own maze bank
-    if (user && params.discordId !== user.id) router.replace('/dashboard')
-  }, [user, loading, params.discordId, router])
+  }, [user, loading, router])
 
   if (loading || !user) return null
 
