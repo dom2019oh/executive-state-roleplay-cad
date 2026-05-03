@@ -1,3 +1,11 @@
+export const DEPT_LOGOS: Record<string, string> = {
+  LSPD: '/logos/LSPD.gif',
+  SAST: '/logos/SAST.png',
+  SAFD: '/logos/SAFD.png',
+  SAMS: '/logos/SAEMS.png',
+  DISPATCH: '/logos/DISPATCH.png',
+}
+
 export const DEPT_COLORS: Record<string, string> = {
   LSPD: '#2563eb',
   SAST: '#7c3aed',

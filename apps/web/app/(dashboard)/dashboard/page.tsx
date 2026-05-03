@@ -5,7 +5,8 @@ import { useAuth } from '@/lib/auth-context'
 import { api } from '@/lib/api'
 import Link from 'next/link'
 import { ShieldAlert, Car, FileText, Plus, User } from 'lucide-react'
-import { DEPT_COLORS } from '@/lib/constants'
+import { DEPT_COLORS, DEPT_LABELS } from '@/lib/constants'
+import DeptLogo from '@/components/ui/DeptLogo'
 
 interface CivilianData {
   civilian: any
@@ -326,27 +327,27 @@ function OfficerCard() {
     >
       <div
         style={{
-          width: 44,
-          height: 44,
+          width: 52,
+          height: 52,
           borderRadius: 8,
-          background: deptColor + '22',
-          color: deptColor,
+          background: deptColor + '18',
+          border: `1px solid ${deptColor}44`,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          fontWeight: 700,
-          fontSize: 12,
           flexShrink: 0,
-          border: `1px solid ${deptColor}44`,
+          padding: 4,
         }}
       >
-        {officer.department}
+        <DeptLogo dept={officer.department} size={40} />
       </div>
       <div>
         <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--text-primary)' }}>
           Badge #{officer.badgeNumber}
         </div>
-        <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>{officer.rank} · {officer.department}</div>
+        <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>
+          {officer.rank} · {DEPT_LABELS[officer.department] ?? officer.department}
+        </div>
       </div>
       <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 6 }}>
         <div

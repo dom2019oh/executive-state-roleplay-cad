@@ -3,8 +3,9 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useAuth } from '@/lib/auth-context'
 import { api } from '@/lib/api'
-import { DEPT_COLORS, UNIT_STATUS_COLORS } from '@/lib/constants'
+import { DEPT_COLORS, DEPT_LABELS, DEPT_LOGOS, UNIT_STATUS_COLORS } from '@/lib/constants'
 import { Lock, AlertOctagon } from 'lucide-react'
+import DeptLogo from '@/components/ui/DeptLogo'
 
 interface OfficerState {
   id: string
@@ -159,9 +160,19 @@ export default function CadPage() {
           justifyContent: 'space-between',
         }}
       >
-        <span style={{ fontWeight: 700, fontSize: 14, color: 'var(--text-primary)' }}>
-          Utility Panel — <span style={{ color: 'var(--text-secondary)' }}>AOP: Los Santos</span>
-        </span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          {officer?.department && <DeptLogo dept={officer.department} size={36} />}
+          <div>
+            <div style={{ fontWeight: 700, fontSize: 14, color: 'var(--text-primary)' }}>
+              Utility Panel — <span style={{ color: 'var(--text-secondary)' }}>AOP: Los Santos</span>
+            </div>
+            {officer?.department && (
+              <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 1 }}>
+                {DEPT_LABELS[officer.department]} · Badge #{officer.badgeNumber} · {officer.rank}
+              </div>
+            )}
+          </div>
+        </div>
         <span style={{ fontSize: 13, color: 'var(--text-muted)', fontFamily: 'monospace' }}>
           {formatClock(now)}
         </span>
@@ -353,7 +364,12 @@ export default function CadPage() {
                         <span style={{ color: 'var(--text-primary)', fontSize: 13 }}>{o.discordDisplayName}</span>
                       </div>
                     </td>
-                    <td>{o.department}</td>
+                    <td>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <DeptLogo dept={o.department} size={20} />
+                        <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>{o.department}</span>
+                      </div>
+                    </td>
                     <td>{o.rank}</td>
                     <td>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>

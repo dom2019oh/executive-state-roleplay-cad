@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { api } from '@/lib/api'
 import { useAuth } from '@/lib/auth-context'
 import { DEPT_COLORS, DEPT_LABELS, DEPARTMENTS } from '@/lib/constants'
+import DeptLogo from '@/components/ui/DeptLogo'
 
 export default function JoinDepartmentPage() {
   const router = useRouter()
@@ -32,7 +33,7 @@ export default function JoinDepartmentPage() {
   }
 
   return (
-    <div className="max-w-xl flex flex-col gap-6">
+    <div style={{ maxWidth: 520, display: 'flex', flexDirection: 'column', gap: 24 }}>
       <div>
         <h1 className="page-title">Join a Department</h1>
         <p style={{ color: 'var(--text-muted)', fontSize: 13, marginTop: 4 }}>
@@ -41,15 +42,12 @@ export default function JoinDepartmentPage() {
       </div>
 
       {error && (
-        <div
-          className="rounded-lg px-4 py-3 text-sm"
-          style={{ background: '#3f1414', border: '1px solid #7f2828', color: '#fca5a5' }}
-        >
+        <div style={{ background: '#3f1414', border: '1px solid #7f2828', color: '#fca5a5', borderRadius: 8, padding: '10px 14px', fontSize: 13 }}>
           {error}
         </div>
       )}
 
-      <div className="grid grid-cols-1 gap-3">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
         {DEPARTMENTS.map((dept) => {
           const color = DEPT_COLORS[dept]
           const selected = department === dept
@@ -58,28 +56,69 @@ export default function JoinDepartmentPage() {
               key={dept}
               type="button"
               onClick={() => setDepartment(dept)}
-              className="flex items-center gap-4 px-4 py-3 rounded-lg text-left transition-all"
               style={{
-                background: selected ? `${color}22` : 'var(--bg-surface)',
-                border: `1px solid ${selected ? color : 'var(--border-subtle)'}`,
-                color: selected ? color : 'var(--text-secondary)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 14,
+                padding: '12px 16px',
+                borderRadius: 10,
+                textAlign: 'left',
+                background: selected ? `${color}18` : 'var(--bg-surface)',
+                border: `1px solid ${selected ? color : 'var(--border)'}`,
+                cursor: 'pointer',
+                transition: 'all 0.15s',
+                boxShadow: selected ? `0 0 0 1px ${color}44` : 'none',
               }}
             >
-              <div
-                className="w-3 h-3 rounded-full"
-                style={{ background: color, boxShadow: selected ? `0 0 8px ${color}` : 'none' }}
-              />
-              <div>
-                <div className="font-semibold text-sm">{dept}</div>
-                <div className="text-xs opacity-70">{DEPT_LABELS[dept]}</div>
+              {/* Logo */}
+              <div style={{
+                width: 52,
+                height: 52,
+                borderRadius: 8,
+                background: selected ? `${color}22` : 'var(--bg-elevated)',
+                border: `1px solid ${selected ? color + '44' : 'var(--border)'}`,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+                padding: 4,
+              }}>
+                <DeptLogo dept={dept} size={40} />
+              </div>
+
+              {/* Info */}
+              <div style={{ flex: 1 }}>
+                <div style={{ fontWeight: 700, fontSize: 14, color: selected ? color : 'var(--text-primary)' }}>
+                  {dept}
+                </div>
+                <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>
+                  {DEPT_LABELS[dept]}
+                </div>
+              </div>
+
+              {/* Selected indicator */}
+              <div style={{
+                width: 18,
+                height: 18,
+                borderRadius: '50%',
+                border: `2px solid ${selected ? color : 'var(--border)'}`,
+                background: selected ? color : 'transparent',
+                flexShrink: 0,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+                {selected && (
+                  <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#fff' }} />
+                )}
               </div>
             </button>
           )
         })}
       </div>
 
-      <form onSubmit={submit} className="card flex flex-col gap-4">
-        <div className="flex flex-col gap-1">
+      <form onSubmit={submit} style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: 10, padding: 20, display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
           <label style={{ fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
             Badge Number <span style={{ color: 'var(--danger)' }}>*</span>
           </label>
@@ -89,17 +128,24 @@ export default function JoinDepartmentPage() {
             placeholder="00000"
             maxLength={5}
             pattern="\d{5}"
-            className="font-mono text-lg tracking-widest"
+            style={{ fontFamily: 'monospace', fontSize: 22, letterSpacing: '0.3em', textAlign: 'center' }}
             required
           />
-          <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>Issued by the Discord bot on hire. 5 digits.</span>
+          <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>Issued by the Discord bot on hire. Exactly 5 digits.</span>
         </div>
 
         <button
           type="submit"
           disabled={loading || !department}
-          className="py-3 rounded-lg font-semibold text-white"
-          style={{ background: loading || !department ? 'var(--text-muted)' : 'var(--accent)' }}
+          style={{
+            padding: '11px 0',
+            borderRadius: 8,
+            fontWeight: 600,
+            fontSize: 14,
+            color: '#fff',
+            background: loading || !department ? 'var(--text-muted)' : 'var(--success)',
+            cursor: loading || !department ? 'not-allowed' : 'pointer',
+          }}
         >
           {loading ? 'Joining…' : 'Join Department'}
         </button>

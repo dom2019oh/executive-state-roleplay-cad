@@ -4,8 +4,10 @@ import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/auth-context'
-import { logout } from '@/lib/api'
+import { logout, api } from '@/lib/api'
 import { ChevronDown, LogOut } from 'lucide-react'
+import DeptLogo from '@/components/ui/DeptLogo'
+import { DEPT_LABELS } from '@/lib/constants'
 
 interface DropdownItem {
   href: string
@@ -56,7 +58,16 @@ export default function TopNav() {
   const pathname = usePathname()
   const { user } = useAuth()
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
+  const [officerDept, setOfficerDept] = useState<string | null>(null)
   const navRef = useRef<HTMLElement>(null)
+
+  useEffect(() => {
+    if (user?.officerId) {
+      api.get<{ officer: { department: string } }>('/officers/me')
+        .then((d) => setOfficerDept(d.officer.department))
+        .catch(() => {})
+    }
+  }, [user?.officerId])
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
@@ -232,8 +243,20 @@ export default function TopNav() {
         })}
       </div>
 
-      {/* Right: user + sign out */}
+      {/* Right: dept logo + user + sign out */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 }}>
+
+        {/* Department logo */}
+        {officerDept && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, paddingRight: 12, borderRight: '1px solid var(--border)' }}>
+            <DeptLogo dept={officerDept} size={28} />
+            <div>
+              <div style={{ fontSize: 11, color: 'var(--text-muted)', lineHeight: 1 }}>Department</div>
+              <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-primary)', lineHeight: 1.4 }}>{officerDept}</div>
+            </div>
+          </div>
+        )}
+
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <span style={{ fontSize: 13, color: 'var(--text-secondary)' }}>{user?.discordDisplayName}</span>
           {user?.discordAvatar ? (

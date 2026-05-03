@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from 'react'
 import { api } from '@/lib/api'
 import { DEPT_COLORS, PRIORITY_COLORS, PRIORITY_LABELS, STATUS_COLORS, UNIT_STATUS_COLORS } from '@/lib/constants'
 import { RefreshCw, Plus, AlertOctagon, MapPin, Users } from 'lucide-react'
+import DeptLogo from '@/components/ui/DeptLogo'
 
 interface Call {
   id: string
@@ -174,6 +175,7 @@ export default function DispatchPage() {
             return (
               <div key={dept}>
                 <div className="flex items-center gap-2 mb-2" style={{ borderLeft: `2px solid ${color}`, paddingLeft: 8 }}>
+                  <DeptLogo dept={dept} size={18} />
                   <span style={{ fontSize: 11, fontWeight: 600, color, letterSpacing: '0.06em' }}>{dept}</span>
                   <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>{deptUnits.length}</span>
                 </div>
