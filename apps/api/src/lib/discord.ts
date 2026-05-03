@@ -1,0 +1,53 @@
+const DISCORD_API = 'https://discord.com/api/v10'
+
+export async function getDiscordUser(accessToken: string) {
+  const res = await fetch(`${DISCORD_API}/users/@me`, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  })
+  if (!res.ok) throw new Error('Failed to fetch Discord user')
+  return res.json() as Promise<{
+    id: string
+    username: string
+    global_name: string | null
+    avatar: string | null
+    email?: string
+  }>
+}
+
+export async function getGuildMember(accessToken: string, guildId: string) {
+  const res = await fetch(`${DISCORD_API}/users/@me/guilds/${guildId}/member`, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  })
+  if (res.status === 404) return null
+  if (!res.ok) return null
+  return res.json() as Promise<{
+    roles: string[]
+    nick: string | null
+  }>
+}
+
+export async function exchangeCode(code: string, redirectUri: string) {
+  const params = new URLSearchParams({
+    client_id: process.env.DISCORD_CLIENT_ID!,
+    client_secret: process.env.DISCORD_CLIENT_SECRET!,
+    grant_type: 'authorization_code',
+    code,
+    redirect_uri: redirectUri,
+  })
+  const res = await fetch(`${DISCORD_API}/oauth2/token`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: params,
+  })
+  if (!res.ok) {
+    const err = await res.text()
+    throw new Error(`Discord token exchange failed: ${err}`)
+  }
+  return res.json() as Promise<{
+    access_token: string
+    refresh_token: string
+    expires_in: number
+    token_type: string
+    scope: string
+  }>
+}
