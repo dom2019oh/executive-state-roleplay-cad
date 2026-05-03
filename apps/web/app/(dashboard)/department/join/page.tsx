@@ -71,20 +71,7 @@ export default function JoinDepartmentPage() {
               }}
             >
               {/* Logo */}
-              <div style={{
-                width: 52,
-                height: 52,
-                borderRadius: 8,
-                background: selected ? `${color}22` : 'var(--bg-elevated)',
-                border: `1px solid ${selected ? color + '44' : 'var(--border)'}`,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexShrink: 0,
-                padding: 4,
-              }}>
-                <DeptLogo dept={dept} size={40} />
-              </div>
+              <DeptLogo dept={dept} size={48} />
 
               {/* Info */}
               <div style={{ flex: 1 }}>

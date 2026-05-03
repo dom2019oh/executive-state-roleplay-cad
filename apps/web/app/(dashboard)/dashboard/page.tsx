@@ -325,22 +325,7 @@ function OfficerCard() {
         gap: 14,
       }}
     >
-      <div
-        style={{
-          width: 52,
-          height: 52,
-          borderRadius: 8,
-          background: deptColor + '18',
-          border: `1px solid ${deptColor}44`,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          flexShrink: 0,
-          padding: 4,
-        }}
-      >
-        <DeptLogo dept={officer.department} size={40} />
-      </div>
+      <DeptLogo dept={officer.department} size={48} />
       <div>
         <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--text-primary)' }}>
           Badge #{officer.badgeNumber}

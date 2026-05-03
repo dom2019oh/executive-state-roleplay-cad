@@ -19,21 +19,23 @@ export default function DeptLogo({ dept, size = 32, className }: Props) {
         width={size}
         height={size}
         className={className}
-        style={{ objectFit: 'contain', flexShrink: 0 }}
+        style={{
+          objectFit: 'contain',
+          flexShrink: 0,
+          display: 'block',
+          background: 'transparent',
+        }}
       />
     )
   }
 
-  // Fallback for DISPATCH (no logo)
+  // Text fallback (DISPATCH before logo was available, kept for safety)
   return (
     <div
       className={className}
       style={{
         width: size,
         height: size,
-        borderRadius: 6,
-        background: `${color}22`,
-        border: `1px solid ${color}44`,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',

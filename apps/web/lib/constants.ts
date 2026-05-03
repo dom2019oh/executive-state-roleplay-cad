@@ -1,5 +1,5 @@
 export const DEPT_LOGOS: Record<string, string> = {
-  LSPD: '/logos/LSPD.gif',
+  LSPD: '/logos/LSPD.png',
   SAST: '/logos/SAST.png',
   SAFD: '/logos/SAFD.png',
   SAMS: '/logos/SAEMS.png',
