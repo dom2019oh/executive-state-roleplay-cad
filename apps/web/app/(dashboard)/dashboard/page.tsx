@@ -3,8 +3,8 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '@/lib/auth-context'
 import { api } from '@/lib/api'
-import { DEPT_COLORS, DEPT_LABELS } from '@/lib/constants'
 import Link from 'next/link'
+import { ShieldAlert, Car, FileText, Plus, Lock } from 'lucide-react'
 
 interface CivilianData {
   civilian: any
@@ -28,11 +28,9 @@ export default function Dashboard() {
 
   return (
     <div className="flex flex-col gap-6 max-w-5xl">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="page-title">Dashboard</h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: 13 }}>Welcome back, {user?.discordDisplayName}</p>
-        </div>
+      <div>
+        <h1 className="page-title">Dashboard</h1>
+        <p style={{ color: 'var(--text-muted)', fontSize: 13 }}>Welcome back, {user?.discordDisplayName}</p>
       </div>
 
       {/* Civilian card */}
@@ -106,9 +104,10 @@ export default function Dashboard() {
           label="Active Warrants"
           value={data?.activeWarrants ?? 0}
           color={data?.activeWarrants ? 'var(--danger)' : 'var(--success)'}
+          Icon={ShieldAlert}
         />
-        <StatCard label="Vehicles Registered" value={data?.vehicles?.length ?? 0} color="var(--accent)" />
-        <StatCard label="Citations" value={data?.citations?.length ?? 0} color="var(--warning)" />
+        <StatCard label="Vehicles Registered" value={data?.vehicles?.length ?? 0} color="var(--accent)" Icon={Car} />
+        <StatCard label="Citations" value={data?.citations?.length ?? 0} color="var(--warning)" Icon={FileText} />
       </div>
 
       {/* Vehicles */}
@@ -116,19 +115,15 @@ export default function Dashboard() {
         <div className="card">
           <div className="flex items-center justify-between mb-3">
             <div className="section-title">Registered Vehicles</div>
-            <Link href="/civilian/vehicle/add" style={{ color: 'var(--accent)', fontSize: 12 }}>
-              + Add Vehicle
+            <Link href="/civilian/vehicle/add" className="flex items-center gap-1" style={{ color: 'var(--accent)', fontSize: 12 }}>
+              <Plus size={12} /> Add Vehicle
             </Link>
           </div>
           <div className="table-wrapper">
             <table>
               <thead>
                 <tr>
-                  <th>Plate</th>
-                  <th>Vehicle</th>
-                  <th>Color</th>
-                  <th>Registration</th>
-                  <th>Insurance</th>
+                  <th>Plate</th><th>Vehicle</th><th>Color</th><th>Registration</th><th>Insurance</th>
                 </tr>
               </thead>
               <tbody>
@@ -192,22 +187,16 @@ function Field({ label, value }: { label: string; value: string }) {
 
 function StatusBadge({ label, color }: { label: string; color: string }) {
   return (
-    <span
-      className="badge"
-      style={{
-        background: `${color}22`,
-        color,
-        border: `1px solid ${color}44`,
-      }}
-    >
+    <span className="badge" style={{ background: `${color}22`, color, border: `1px solid ${color}44` }}>
       {label}
     </span>
   )
 }
 
-function StatCard({ label, value, color }: { label: string; value: number; color: string }) {
+function StatCard({ label, value, color, Icon }: { label: string; value: number; color: string; Icon: React.ElementType }) {
   return (
-    <div className="card flex flex-col gap-1">
+    <div className="card flex flex-col gap-2">
+      <Icon size={16} style={{ color }} />
       <div style={{ fontSize: 28, fontWeight: 700, color }}>{value}</div>
       <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>{label}</div>
     </div>

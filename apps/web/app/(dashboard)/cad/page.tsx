@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from 'react'
 import { useAuth } from '@/lib/auth-context'
 import { api } from '@/lib/api'
 import { DEPT_COLORS, TEN_CODES, UNIT_STATUS_COLORS } from '@/lib/constants'
+import { Lock, LogIn, LogOut, MapPin, AlertOctagon } from 'lucide-react'
 
 interface OfficerState {
   id: string
@@ -22,7 +23,6 @@ export default function CadPage() {
   const [loading, setLoading] = useState(true)
   const [statusLoading, setStatusLoading] = useState(false)
   const [location, setLocation] = useState('')
-  const [showStatusPicker, setShowStatusPicker] = useState(false)
 
   const fetchOfficer = useCallback(async () => {
     try {
@@ -54,7 +54,6 @@ export default function CadPage() {
   }
 
   async function setStatus(code: string, label: string) {
-    setShowStatusPicker(false)
     setStatusLoading(true)
     try {
       await api.patch('/officers/status', { status: code, statusLabel: label, location })
@@ -68,7 +67,7 @@ export default function CadPage() {
   if (!user?.officerId) {
     return (
       <div className="flex flex-col items-center justify-center min-h-64 gap-3">
-        <div style={{ color: 'var(--text-muted)', fontSize: 32 }}>🚔</div>
+        <Lock size={32} style={{ color: 'var(--text-muted)' }} />
         <p style={{ color: 'var(--text-secondary)' }}>You need to join a department first.</p>
       </div>
     )
@@ -84,11 +83,23 @@ export default function CadPage() {
         <h1 className="page-title">CAD Interface</h1>
         <div className="flex items-center gap-2">
           {officer?.clockedIn ? (
-            <button onClick={clockOut} disabled={statusLoading} className="btn-ghost text-sm" style={{ borderColor: 'var(--danger)', color: 'var(--danger)' }}>
+            <button
+              onClick={clockOut}
+              disabled={statusLoading}
+              className="flex items-center gap-2 py-2 px-4 rounded-lg font-semibold text-sm"
+              style={{ background: 'transparent', border: '1px solid var(--danger)', color: 'var(--danger)' }}
+            >
+              <LogOut size={13} />
               {statusLoading ? '…' : '10-42 Clock Out'}
             </button>
           ) : (
-            <button onClick={clockIn} disabled={statusLoading} className="py-2 px-4 rounded-lg font-semibold text-white text-sm" style={{ background: 'var(--success)' }}>
+            <button
+              onClick={clockIn}
+              disabled={statusLoading}
+              className="flex items-center gap-2 py-2 px-4 rounded-lg font-semibold text-sm text-white"
+              style={{ background: 'var(--success)' }}
+            >
+              <LogIn size={13} />
               {statusLoading ? '…' : '10-41 Clock In'}
             </button>
           )}
@@ -109,9 +120,7 @@ export default function CadPage() {
               <div className="font-semibold" style={{ color: 'var(--text-primary)' }}>
                 Badge #{officer?.badgeNumber}
               </div>
-              <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
-                {officer?.rank}
-              </div>
+              <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{officer?.rank}</div>
             </div>
           </div>
 
@@ -135,7 +144,9 @@ export default function CadPage() {
 
             {/* Location */}
             <div className="flex flex-col gap-1 mb-4">
-              <label className="section-title">Current Location (10-20)</label>
+              <label className="section-title flex items-center gap-1">
+                <MapPin size={11} /> Current Location (10-20)
+              </label>
               <input
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
@@ -144,7 +155,7 @@ export default function CadPage() {
             </div>
 
             {/* Status codes */}
-            <div className="section-title">Status Update</div>
+            <div className="section-title mb-2">Status Update</div>
             <div className="grid grid-cols-4 gap-2">
               {TEN_CODES.map((tc) => {
                 const color = UNIT_STATUS_COLORS[tc.code] ?? 'var(--text-muted)'
@@ -171,10 +182,11 @@ export default function CadPage() {
 
             {isPanic && (
               <div
-                className="mt-4 rounded-lg px-4 py-3 text-sm font-semibold text-center"
+                className="mt-4 rounded-lg px-4 py-3 flex items-center justify-center gap-2 text-sm font-semibold"
                 style={{ background: '#3f1414', border: '1px solid var(--danger)', color: 'var(--danger)' }}
               >
-                ⚠ PANIC ACTIVE — {officer.status} — OFFICER IN DISTRESS
+                <AlertOctagon size={15} />
+                PANIC ACTIVE — {officer.status} — OFFICER IN DISTRESS
               </div>
             )}
           </>
@@ -182,12 +194,9 @@ export default function CadPage() {
       </div>
 
       {!officer?.clockedIn && (
-        <div
-          className="card text-center py-10"
-          style={{ color: 'var(--text-muted)' }}
-        >
-          <div style={{ fontSize: 32, marginBottom: 8 }}>🔒</div>
-          <p>Clock in with <strong>10-41</strong> to access CAD functions.</p>
+        <div className="card flex flex-col items-center justify-center py-10 gap-3" style={{ color: 'var(--text-muted)' }}>
+          <Lock size={28} style={{ color: 'var(--text-muted)' }} />
+          <p>Clock in with <strong style={{ color: 'var(--text-secondary)' }}>10-41</strong> to access CAD functions.</p>
         </div>
       )}
     </div>

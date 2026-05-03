@@ -7,6 +7,13 @@ const auth = new Hono()
 
 const REDIRECT_URI = `${process.env.API_URL}/auth/discord/callback`
 const SESSION_TTL = 7 * 24 * 60 * 60 * 1000 // 7 days
+const IS_DEV = !process.env.FIREBASE_PRIVATE_KEY || process.env.FIREBASE_PRIVATE_KEY === 'PLACEHOLDER'
+
+// Dev-only instant login — bypasses Discord OAuth
+auth.get('/dev-login', async (c) => {
+  if (!IS_DEV) return c.json({ error: 'Not available in production' }, 403)
+  return c.redirect(`${process.env.WEB_URL}/auth/callback?token=dev-token`)
+})
 
 auth.get('/discord', (c) => {
   const params = new URLSearchParams({

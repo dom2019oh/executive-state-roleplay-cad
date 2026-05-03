@@ -3,6 +3,7 @@
 import { useSearchParams } from 'next/navigation'
 import { loginWithDiscord } from '@/lib/api'
 import { Suspense } from 'react'
+import { Settings } from 'lucide-react'
 
 const ERROR_MESSAGES: Record<string, string> = {
   access_denied: 'Discord access was denied. Please try again.',
@@ -62,6 +63,16 @@ function LoginContent() {
           <br />
           Access is restricted to guild members only.
         </p>
+
+        {process.env.NODE_ENV === 'development' && (
+          <a
+            href="http://localhost:3001/auth/dev-login"
+            className="flex items-center justify-center gap-2 py-2 px-4 rounded-lg text-xs font-medium border transition-all"
+            style={{ borderColor: 'var(--border)', color: 'var(--text-muted)', background: 'transparent' }}
+          >
+            <Settings size={12} /> Dev Login (no Discord required)
+          </a>
+        )}
       </div>
 
       <div

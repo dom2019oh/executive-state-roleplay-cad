@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react'
 import { api } from '@/lib/api'
+import { User, Car, X, ChevronRight } from 'lucide-react'
 
 interface Civilian {
   id: string
@@ -85,13 +86,12 @@ export default function SearchPage() {
             <button
               key={t}
               onClick={() => setType(t)}
-              className="px-3 py-1 rounded text-xs font-semibold transition-all"
-              style={{
-                background: type === t ? 'var(--accent)' : 'var(--bg-elevated)',
-                color: type === t ? '#fff' : 'var(--text-secondary)',
-              }}
+              className="flex items-center gap-1 px-3 py-1 rounded text-xs font-semibold transition-all"
+              style={{ background: type === t ? 'var(--accent)' : 'var(--bg-elevated)', color: type === t ? '#fff' : 'var(--text-secondary)' }}
             >
-              {t === 'all' ? 'All' : t === 'person' ? 'Person' : 'Vehicle/Plate'}
+              {t === 'person' && <User size={11} />}
+              {t === 'vehicle' && <Car size={11} />}
+              {t === 'all' ? 'All' : t === 'person' ? 'Person' : 'Vehicle / Plate'}
             </button>
           ))}
         </div>
@@ -118,7 +118,7 @@ export default function SearchPage() {
                 onMouseLeave={(e) => (e.currentTarget.style.borderColor = 'var(--border-subtle)')}
               >
                 <div className="flex items-center gap-3">
-                  <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>👤</span>
+                  <User size={14} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
                   <div>
                     <div style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: 13 }}>
                       {c.firstName} {c.lastName}
@@ -128,10 +128,11 @@ export default function SearchPage() {
                     </div>
                   </div>
                 </div>
-                <div className="flex gap-1">
+                <div className="flex items-center gap-1">
                   {c.flags?.map((f) => (
                     <span key={f} className="badge" style={{ background: '#3f1414', color: '#fca5a5' }}>{f}</span>
                   ))}
+                  <ChevronRight size={13} style={{ color: 'var(--text-muted)' }} />
                 </div>
               </button>
             ))}
@@ -146,7 +147,7 @@ export default function SearchPage() {
                 onMouseLeave={(e) => (e.currentTarget.style.borderColor = 'var(--border-subtle)')}
               >
                 <div className="flex items-center gap-3">
-                  <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>🚗</span>
+                  <Car size={14} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
                   <div>
                     <div style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: 13, fontFamily: 'monospace' }}>
                       {v.plate}
@@ -225,19 +226,22 @@ function ProfileView({ profile, onClose }: { profile: FullProfile; onClose: () =
             </div>
           </div>
         </div>
-        <button onClick={onClose} style={{ color: 'var(--text-muted)', background: 'transparent', fontSize: 18 }}>✕</button>
+        <button
+          onClick={onClose}
+          className="flex items-center justify-center w-7 h-7 rounded"
+          style={{ color: 'var(--text-muted)', background: 'var(--bg-elevated)' }}
+        >
+          <X size={14} />
+        </button>
       </div>
 
-      <div className="flex gap-1">
+      <div className="flex gap-1 flex-wrap">
         {tabs.map((t) => (
           <button
             key={t.id}
             onClick={() => setTab(t.id as any)}
             className="px-3 py-1 rounded text-xs font-semibold transition-all"
-            style={{
-              background: tab === t.id ? 'var(--accent)' : 'var(--bg-elevated)',
-              color: tab === t.id ? '#fff' : 'var(--text-secondary)',
-            }}
+            style={{ background: tab === t.id ? 'var(--accent)' : 'var(--bg-elevated)', color: tab === t.id ? '#fff' : 'var(--text-secondary)' }}
           >
             {t.label}
           </button>
@@ -264,9 +268,7 @@ function ProfileView({ profile, onClose }: { profile: FullProfile; onClose: () =
         <RecordTable
           headers={['Number', 'Type', 'Reason', 'Status', 'Issued']}
           rows={profile.warrants.map((w) => [
-            w.warrantNumber,
-            w.type,
-            w.reason,
+            w.warrantNumber, w.type, w.reason,
             <span className="badge" style={{ background: w.status === 'active' ? '#3f1414' : 'var(--bg-elevated)', color: w.status === 'active' ? 'var(--danger)' : 'var(--text-muted)' }}>{w.status}</span>,
             new Date(w.issuedAt).toLocaleDateString(),
           ])}
@@ -276,41 +278,21 @@ function ProfileView({ profile, onClose }: { profile: FullProfile; onClose: () =
       {tab === 'citations' && (
         <RecordTable
           headers={['Number', 'Type', 'Location', 'Fine', 'Status', 'Date']}
-          rows={profile.citations.map((c) => [
-            c.citationNumber,
-            c.type,
-            c.location,
-            `$${c.totalFine.toLocaleString()}`,
-            c.status,
-            new Date(c.createdAt).toLocaleDateString(),
-          ])}
+          rows={profile.citations.map((c) => [c.citationNumber, c.type, c.location, `$${c.totalFine?.toLocaleString()}`, c.status, new Date(c.createdAt).toLocaleDateString()])}
         />
       )}
 
       {tab === 'arrests' && (
         <RecordTable
           headers={['Number', 'Location', 'Charges', 'Fine', 'Status', 'Date']}
-          rows={profile.arrests.map((a) => [
-            a.arrestNumber,
-            a.location,
-            `${a.charges?.length ?? 0} charge${a.charges?.length !== 1 ? 's' : ''}`,
-            `$${a.totalFine.toLocaleString()}`,
-            a.status,
-            new Date(a.arrestDate).toLocaleDateString(),
-          ])}
+          rows={profile.arrests.map((a) => [a.arrestNumber, a.location, `${a.charges?.length ?? 0} charge${a.charges?.length !== 1 ? 's' : ''}`, `$${a.totalFine?.toLocaleString()}`, a.status, new Date(a.arrestDate).toLocaleDateString()])}
         />
       )}
 
       {tab === 'vehicles' && (
         <RecordTable
           headers={['Plate', 'Vehicle', 'Color', 'Registration', 'Insurance']}
-          rows={profile.vehicles.map((v) => [
-            <span className="font-mono font-semibold">{v.plate}</span>,
-            `${v.year} ${v.make} ${v.model}`,
-            v.color,
-            v.registrationStatus,
-            v.insurance?.status ?? 'unknown',
-          ])}
+          rows={profile.vehicles.map((v) => [<span className="font-mono font-semibold">{v.plate}</span>, `${v.year} ${v.make} ${v.model}`, v.color, v.registrationStatus, v.insurance?.status ?? 'unknown'])}
         />
       )}
     </div>

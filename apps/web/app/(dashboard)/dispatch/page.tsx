@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import { api } from '@/lib/api'
 import { DEPT_COLORS, PRIORITY_COLORS, PRIORITY_LABELS, STATUS_COLORS, UNIT_STATUS_COLORS } from '@/lib/constants'
+import { RefreshCw, Plus, AlertOctagon, MapPin, Users } from 'lucide-react'
 
 interface Call {
   id: string
@@ -41,14 +42,13 @@ export default function DispatchPage() {
   const [loading, setLoading] = useState(true)
 
   const fetch = useCallback(async () => {
-    const [callData, unitData] = await Promise.all([
+    const [pending, active, onScene, unitData] = await Promise.all([
       api.get<{ calls: Call[] }>('/calls?status=pending').catch(() => ({ calls: [] })),
+      api.get<{ calls: Call[] }>('/calls?status=active').catch(() => ({ calls: [] })),
+      api.get<{ calls: Call[] }>('/calls?status=on_scene').catch(() => ({ calls: [] })),
       api.get<{ units: Unit[] }>('/officers/active').catch(() => ({ units: [] })),
     ])
-    const active = await api.get<{ calls: Call[] }>('/calls?status=active').catch(() => ({ calls: [] }))
-    const onScene = await api.get<{ calls: Call[] }>('/calls?status=on_scene').catch(() => ({ calls: [] }))
-
-    setCalls([...callData.calls, ...active.calls, ...onScene.calls])
+    setCalls([...pending.calls, ...active.calls, ...onScene.calls])
     setUnits(unitData.units)
     setLoading(false)
   }, [])
@@ -72,12 +72,19 @@ export default function DispatchPage() {
           </span>
           <button
             onClick={() => setNewCall(true)}
-            className="py-2 px-4 rounded-lg font-semibold text-sm"
-            style={{ background: 'var(--accent)', color: '#fff' }}
+            className="flex items-center gap-2 py-2 px-4 rounded-lg font-semibold text-sm text-white"
+            style={{ background: 'var(--accent)' }}
           >
-            + New Call
+            <Plus size={13} /> New Call
           </button>
-          <button onClick={fetch} className="btn-ghost" title="Refresh">↻</button>
+          <button
+            onClick={fetch}
+            className="flex items-center justify-center w-8 h-8 rounded-lg"
+            style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-subtle)', color: 'var(--text-muted)' }}
+            title="Refresh"
+          >
+            <RefreshCw size={13} />
+          </button>
         </div>
       </div>
 
@@ -87,7 +94,8 @@ export default function DispatchPage() {
           className="rounded-lg px-4 py-3 flex items-center gap-3"
           style={{ background: '#3f1414', border: '1px solid var(--danger)', color: 'var(--danger)' }}
         >
-          <span className="font-bold">⚠ PANIC ALERT</span>
+          <AlertOctagon size={15} />
+          <span className="font-bold">PANIC ALERT</span>
           {panicUnits.map((u) => (
             <span key={u.officerId} className="badge" style={{ background: 'var(--danger)', color: '#fff' }}>
               {u.department} #{u.badgeNumber} — {u.fullName}
@@ -136,18 +144,19 @@ export default function DispatchPage() {
                   </span>
                 </div>
 
-                <div style={{ color: 'var(--text-primary)', fontSize: 13, marginBottom: 4 }}>{call.description}</div>
+                <div style={{ color: 'var(--text-primary)', fontSize: 13, marginBottom: 6 }}>{call.description}</div>
                 <div className="flex items-center justify-between">
-                  <span style={{ color: 'var(--text-muted)', fontSize: 12 }}>📍 {call.location}</span>
-                  <div className="flex gap-1">
+                  <div className="flex items-center gap-1" style={{ color: 'var(--text-muted)', fontSize: 12 }}>
+                    <MapPin size={11} /> {call.location}
+                  </div>
+                  <div className="flex items-center gap-2">
                     {call.assignedUnits.length > 0 && (
-                      <span className="badge" style={{ background: 'var(--bg-elevated)', color: 'var(--text-muted)' }}>
-                        {call.assignedUnits.length} unit{call.assignedUnits.length !== 1 ? 's' : ''}
-                      </span>
+                      <div className="flex items-center gap-1 badge" style={{ background: 'var(--bg-elevated)', color: 'var(--text-muted)' }}>
+                        <Users size={10} />
+                        {call.assignedUnits.length}
+                      </div>
                     )}
-                    <span style={{ color: 'var(--text-muted)', fontSize: 11 }}>
-                      {call.callNumber}
-                    </span>
+                    <span style={{ color: 'var(--text-muted)', fontSize: 11 }}>{call.callNumber}</span>
                   </div>
                 </div>
               </button>
@@ -164,10 +173,7 @@ export default function DispatchPage() {
             const color = DEPT_COLORS[dept]
             return (
               <div key={dept}>
-                <div
-                  className="flex items-center gap-2 mb-2"
-                  style={{ borderLeft: `2px solid ${color}`, paddingLeft: 8 }}
-                >
+                <div className="flex items-center gap-2 mb-2" style={{ borderLeft: `2px solid ${color}`, paddingLeft: 8 }}>
                   <span style={{ fontSize: 11, fontWeight: 600, color, letterSpacing: '0.06em' }}>{dept}</span>
                   <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>{deptUnits.length}</span>
                 </div>
@@ -177,10 +183,7 @@ export default function DispatchPage() {
                     <div
                       key={unit.officerId}
                       className="card mb-2 flex items-center justify-between"
-                      style={{
-                        padding: '8px 12px',
-                        borderColor: unit.panicActive ? 'var(--danger)' : 'var(--border-subtle)',
-                      }}
+                      style={{ padding: '8px 12px', borderColor: unit.panicActive ? 'var(--danger)' : 'var(--border-subtle)' }}
                     >
                       <div className="flex items-center gap-2">
                         <div className="w-2 h-2 rounded-full" style={{ background: uColor }} />
@@ -194,7 +197,9 @@ export default function DispatchPage() {
                       <div style={{ textAlign: 'right' }}>
                         <div style={{ fontSize: 11, fontWeight: 600, color: uColor }}>{unit.status}</div>
                         {unit.location && (
-                          <div style={{ fontSize: 10, color: 'var(--text-muted)' }}>{unit.location}</div>
+                          <div className="flex items-center gap-1 justify-end" style={{ fontSize: 10, color: 'var(--text-muted)' }}>
+                            <MapPin size={9} /> {unit.location}
+                          </div>
                         )}
                       </div>
                     </div>
@@ -263,8 +268,8 @@ function NewCallModal({ onClose, onCreated }: { onClose: () => void; onCreated: 
             <option value="3">Code 3 — Routine</option>
           </select>
         </ModalField>
-        <button type="submit" disabled={loading} className="py-2 rounded-lg font-semibold text-white mt-2" style={{ background: 'var(--accent)' }}>
-          {loading ? 'Creating…' : 'Create Call'}
+        <button type="submit" disabled={loading} className="flex items-center justify-center gap-2 py-2 rounded-lg font-semibold text-white mt-2" style={{ background: 'var(--accent)' }}>
+          <Plus size={13} /> {loading ? 'Creating…' : 'Create Call'}
         </button>
       </form>
     </Modal>
@@ -299,18 +304,24 @@ function CallDetailModal({ call, units, onClose, onUpdate }: { call: Call; units
     <Modal title={`${call.callNumber} — ${call.code} ${call.codeLabel}`} onClose={onClose}>
       <div className="flex flex-col gap-4">
         <div className="grid grid-cols-2 gap-3">
-          <div><div className="section-title">Location</div><div style={{ color: 'var(--text-primary)', fontSize: 13 }}>{call.location}</div></div>
+          <div>
+            <div className="section-title flex items-center gap-1"><MapPin size={10} /> Location</div>
+            <div style={{ color: 'var(--text-primary)', fontSize: 13 }}>{call.location}</div>
+          </div>
           <div>
             <div className="section-title">Priority</div>
             <span className="badge" style={{ background: pColor + '22', color: pColor }}>{PRIORITY_LABELS[call.priority]}</span>
           </div>
         </div>
         {call.description && (
-          <div><div className="section-title">Description</div><div style={{ color: 'var(--text-secondary)', fontSize: 13 }}>{call.description}</div></div>
+          <div>
+            <div className="section-title">Description</div>
+            <div style={{ color: 'var(--text-secondary)', fontSize: 13 }}>{call.description}</div>
+          </div>
         )}
 
         <div>
-          <div className="section-title mb-2">Assign Units</div>
+          <div className="section-title flex items-center gap-1 mb-2"><Users size={10} /> Assign Units</div>
           <div className="flex flex-col gap-1 max-h-48 overflow-y-auto">
             {units.map((u) => (
               <label
@@ -331,14 +342,15 @@ function CallDetailModal({ call, units, onClose, onUpdate }: { call: Call; units
                 <span style={{ color: UNIT_STATUS_COLORS[u.status] ?? 'var(--text-muted)', fontSize: 11, marginLeft: 'auto' }}>{u.status}</span>
               </label>
             ))}
+            {units.length === 0 && <div style={{ color: 'var(--text-muted)', fontSize: 12 }}>No units online.</div>}
           </div>
         </div>
 
         <div className="flex gap-2">
-          <button onClick={assign} disabled={loading} className="flex-1 py-2 rounded-lg font-semibold text-white text-sm" style={{ background: 'var(--accent)' }}>
-            {loading ? '…' : 'Assign Units'}
+          <button onClick={assign} disabled={loading} className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg font-semibold text-white text-sm" style={{ background: 'var(--accent)' }}>
+            <Users size={13} /> {loading ? '…' : 'Assign Units'}
           </button>
-          <button onClick={close} disabled={loading} className="py-2 px-4 rounded-lg font-semibold text-sm" style={{ background: '#3f1414', color: 'var(--danger)', border: '1px solid var(--danger)44' }}>
+          <button onClick={close} disabled={loading} className="flex items-center gap-2 py-2 px-4 rounded-lg font-semibold text-sm" style={{ background: '#3f1414', color: 'var(--danger)', border: '1px solid #7f282844' }}>
             Close Call
           </button>
         </div>
@@ -353,7 +365,7 @@ function Modal({ title, onClose, children }: { title: string; onClose: () => voi
       <div className="card w-full max-w-lg flex flex-col gap-4" style={{ maxHeight: '90vh', overflowY: 'auto' }}>
         <div className="flex items-center justify-between">
           <div className="font-semibold" style={{ color: 'var(--text-primary)' }}>{title}</div>
-          <button onClick={onClose} style={{ color: 'var(--text-muted)', background: 'transparent', fontSize: 18 }}>✕</button>
+          <button onClick={onClose} style={{ color: 'var(--text-muted)', background: 'transparent', fontSize: 18, lineHeight: 1 }}>✕</button>
         </div>
         {children}
       </div>

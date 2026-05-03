@@ -16,11 +16,17 @@ import incidents from './routes/records/incidents'
 
 const app = new Hono()
 
+const ALLOWED_ORIGINS = [
+  'http://localhost:3000',
+  'https://executivecad.buildablelabs.dev',
+  process.env.WEB_URL,
+].filter(Boolean) as string[]
+
 app.use('*', logger())
 app.use(
   '*',
   cors({
-    origin: process.env.WEB_URL ?? 'http://localhost:3000',
+    origin: (origin) => (ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0]),
     credentials: true,
     allowHeaders: ['Authorization', 'Content-Type'],
     allowMethods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],

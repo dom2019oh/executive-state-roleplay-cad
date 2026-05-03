@@ -4,18 +4,29 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useAuth } from '@/lib/auth-context'
 import { logout } from '@/lib/api'
-import { DEPT_COLORS, DEPT_SHORT } from '@/lib/constants'
+import {
+  LayoutDashboard,
+  Radio,
+  Car,
+  Search,
+  FileText,
+  Link2,
+  ScrollText,
+  Scale,
+  AlertTriangle,
+  LogOut,
+} from 'lucide-react'
 
 const NAV = [
-  { href: '/dashboard', label: 'Dashboard', icon: '⬡' },
-  { href: '/dispatch', label: 'Dispatch', icon: '📡', roles: ['dispatcher', 'admin'] },
-  { href: '/cad', label: 'CAD', icon: '🚔', roles: ['officer', 'dispatcher', 'admin'] },
-  { href: '/search', label: 'Search', icon: '🔍', roles: ['officer', 'dispatcher', 'admin'] },
-  { href: '/records/incidents', label: 'Incidents', icon: '📋', roles: ['officer', 'dispatcher', 'admin'] },
-  { href: '/records/arrests', label: 'Arrests', icon: '⛓', roles: ['officer', 'dispatcher', 'admin'] },
-  { href: '/records/citations', label: 'Citations', icon: '📄', roles: ['officer', 'dispatcher', 'admin'] },
-  { href: '/records/warrants', label: 'Warrants', icon: '⚖', roles: ['officer', 'dispatcher', 'admin'] },
-  { href: '/records/bolos', label: 'BOLOs', icon: '📢', roles: ['officer', 'dispatcher', 'admin'] },
+  { href: '/dashboard', label: 'Dashboard', Icon: LayoutDashboard },
+  { href: '/dispatch', label: 'Dispatch', Icon: Radio, roles: ['dispatcher', 'admin'] },
+  { href: '/cad', label: 'CAD', Icon: Car, roles: ['officer', 'dispatcher', 'admin'] },
+  { href: '/search', label: 'Search', Icon: Search, roles: ['officer', 'dispatcher', 'admin'] },
+  { href: '/records/incidents', label: 'Incidents', Icon: FileText, roles: ['officer', 'dispatcher', 'admin'] },
+  { href: '/records/arrests', label: 'Arrests', Icon: Link2, roles: ['officer', 'dispatcher', 'admin'] },
+  { href: '/records/citations', label: 'Citations', Icon: ScrollText, roles: ['officer', 'dispatcher', 'admin'] },
+  { href: '/records/warrants', label: 'Warrants', Icon: Scale, roles: ['officer', 'dispatcher', 'admin'] },
+  { href: '/records/bolos', label: 'BOLOs', Icon: AlertTriangle, roles: ['officer', 'dispatcher', 'admin'] },
 ]
 
 export default function Sidebar() {
@@ -55,23 +66,14 @@ export default function Sidebar() {
         </div>
       </div>
 
-      {/* Officer info */}
-      {user?.officerId && (
-        <div className="px-4 py-3" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-          <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
-            DEPARTMENT
-          </div>
-        </div>
-      )}
-
       {/* Nav */}
       <nav className="flex-1 py-2 overflow-y-auto">
-        {visibleNav.map((item) => {
-          const active = pathname === item.href || pathname.startsWith(item.href + '/')
+        {visibleNav.map(({ href, label, Icon }) => {
+          const active = pathname === href || pathname.startsWith(href + '/')
           return (
             <Link
-              key={item.href}
-              href={item.href}
+              key={href}
+              href={href}
               className="flex items-center gap-3 px-4 py-2 mx-2 rounded-lg text-sm transition-all"
               style={{
                 background: active ? 'var(--bg-hover)' : 'transparent',
@@ -79,8 +81,8 @@ export default function Sidebar() {
                 fontWeight: active ? 600 : 400,
               }}
             >
-              <span style={{ fontSize: 15, width: 20, textAlign: 'center' }}>{item.icon}</span>
-              {item.label}
+              <Icon size={15} style={{ flexShrink: 0 }} />
+              {label}
             </Link>
           )
         })}
@@ -89,12 +91,15 @@ export default function Sidebar() {
       {/* User */}
       <div className="px-4 py-3" style={{ borderTop: '1px solid var(--border-subtle)' }}>
         <div className="flex items-center gap-2 mb-3">
-          {user?.discordAvatar && (
-            <img
-              src={user.discordAvatar}
-              alt=""
-              className="w-7 h-7 rounded-full"
-            />
+          {user?.discordAvatar ? (
+            <img src={user.discordAvatar} alt="" className="w-7 h-7 rounded-full" />
+          ) : (
+            <div
+              className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold"
+              style={{ background: 'var(--bg-elevated)', color: 'var(--text-muted)' }}
+            >
+              {user?.discordDisplayName?.[0]?.toUpperCase()}
+            </div>
           )}
           <div className="flex-1 min-w-0">
             <div className="text-xs font-medium truncate" style={{ color: 'var(--text-primary)' }}>
@@ -107,7 +112,7 @@ export default function Sidebar() {
         </div>
         <button
           onClick={logout}
-          className="w-full text-left text-xs py-1 px-2 rounded"
+          className="w-full flex items-center gap-2 text-xs py-1 px-2 rounded"
           style={{ color: 'var(--text-muted)', background: 'transparent' }}
           onMouseEnter={(e) => {
             e.currentTarget.style.background = 'var(--bg-hover)'
@@ -118,6 +123,7 @@ export default function Sidebar() {
             e.currentTarget.style.color = 'var(--text-muted)'
           }}
         >
+          <LogOut size={12} />
           Sign out
         </button>
       </div>
