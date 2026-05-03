@@ -3,7 +3,7 @@
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/auth-context'
-import TopNav from '@/components/layout/TopNav'
+import Sidebar from '@/components/layout/Sidebar'
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth()
@@ -17,7 +17,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
         <div style={{ color: 'var(--text-muted)' }}>Loading…</div>
       </div>
     )
@@ -26,9 +26,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   if (!user) return null
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <TopNav />
-      <main className="flex-1 p-6" style={{ background: 'var(--bg-base)' }}>
+    <div style={{ display: 'flex', minHeight: '100vh' }}>
+      <Sidebar />
+      <main style={{ flex: 1, overflowY: 'auto', padding: 24, background: 'var(--bg-base)' }}>
         {children}
       </main>
     </div>
