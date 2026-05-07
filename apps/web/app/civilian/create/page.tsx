@@ -120,8 +120,8 @@ export default function CreateCivilianPage() {
           }}
         >
           {/* Header */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24 }}>
-            <img src="/logos/civilian-operations.png" alt="Civilian Operations" style={{ width: 40, height: 40, objectFit: 'contain', flexShrink: 0 }} />
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: 10, marginBottom: 28 }}>
+            <img src="/logos/civilian-operations.png" alt="Civilian Operations" style={{ width: 72, height: 72, objectFit: 'contain' }} />
             <div>
               <div style={{ fontSize: 22, fontWeight: 700, color: 'var(--text-primary)' }}>Register New Civilian</div>
               <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>This is your citizenship record in the CAD system.</div>
