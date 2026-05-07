@@ -42,7 +42,7 @@ function LoginContent() {
           <h1 style={{ fontSize: 32, fontWeight: 800, color: '#ffffff', margin: 0, letterSpacing: '-0.02em', textShadow: '0 2px 12px rgba(0,0,0,0.4)' }}>
             Executive State CAD
           </h1>
-          <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.65)', margin: 0, lineHeight: 1.6, maxWidth: 300, fontWeight: 500 }}>
+          <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.85)', margin: 0, lineHeight: 1.6, maxWidth: 300, fontWeight: 500 }}>
             Computer-Aided Dispatch System. Guild membership required to access.
           </p>
         </div>
@@ -74,7 +74,7 @@ function LoginContent() {
             Sign in with Discord
           </button>
 
-          <p style={{ textAlign: 'center', fontSize: 12, color: 'rgba(255,255,255,0.45)', margin: 0, fontWeight: 500 }}>
+          <p style={{ textAlign: 'center', fontSize: 12, color: 'rgba(255,255,255,0.75)', margin: 0, fontWeight: 500 }}>
             Access is restricted to Executive State guild members only.
           </p>
 
@@ -94,17 +94,17 @@ function LoginContent() {
         </div>
 
         {/* Dept row */}
-        <div style={{ display: 'flex', gap: 20, fontSize: 11, color: 'rgba(255,255,255,0.35)', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+        <div style={{ display: 'flex', gap: 20, fontSize: 11, color: 'rgba(255,255,255,0.65)', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
           {['LSPD', 'SAST', 'SAFD', 'SAMS', 'DISPATCH'].map((d) => (
             <span key={d}>{d}</span>
           ))}
         </div>
 
-        {/* Made by */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
-          <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', fontWeight: 600, letterSpacing: '0.02em' }}>Made by</span>
-          <img src="/buildable-logo.png" alt="" style={{ height: 16, width: 'auto', opacity: 0.55 }} />
-          <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', fontWeight: 700, letterSpacing: '0.01em' }}>Buildable Labs</span>
+        {/* Made by — fixed to bottom */}
+        <div style={{ position: 'fixed', bottom: 20, left: 0, right: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, zIndex: 2 }}>
+          <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.7)', fontWeight: 600, letterSpacing: '0.02em' }}>Made by</span>
+          <img src="/buildable-logo.png" alt="" style={{ height: 16, width: 'auto', opacity: 0.85 }} />
+          <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.85)', fontWeight: 700, letterSpacing: '0.01em' }}>Buildable Labs</span>
         </div>
 
       </div>
