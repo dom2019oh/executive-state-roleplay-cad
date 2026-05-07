@@ -18,8 +18,16 @@ function LoginContent() {
   return (
     <div
       className="min-h-screen flex flex-col items-center justify-center gap-8 p-6"
-      style={{ background: 'var(--bg-base)' }}
+      style={{
+        backgroundImage: 'url(/login-bg.jpg)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+      }}
     >
+      {/* dark overlay so text stays readable */}
+      <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(1px)', zIndex: 0 }} />
+      <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 32, width: '100%' }}>
       <div className="flex flex-col items-center gap-3">
         <div
           className="w-14 h-14 rounded-xl flex items-center justify-center text-2xl font-bold"
@@ -84,6 +92,7 @@ function LoginContent() {
         <span>SAFD</span>
         <span>SAMS</span>
         <span>DISPATCH</span>
+      </div>
       </div>
     </div>
   )
