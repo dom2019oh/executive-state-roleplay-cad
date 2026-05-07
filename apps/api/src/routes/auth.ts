@@ -8,6 +8,7 @@ const auth = new Hono()
 const REDIRECT_URI = `${process.env.API_URL}/auth/discord/callback`
 const SESSION_TTL = 365 * 24 * 60 * 60 * 1000 // 1 year
 const IS_DEV = !process.env.FIREBASE_PRIVATE_KEY || process.env.FIREBASE_PRIVATE_KEY === 'PLACEHOLDER'
+const FOUNDER_ID = '924720491720237096'
 
 auth.get('/dev-login', async (c) => {
   if (!IS_DEV) return c.json({ error: 'Not available in production' }, 403)
@@ -65,10 +66,12 @@ auth.get('/discord/callback', async (c) => {
       lastLogin: now(),
     }
 
+    const isFounder = discordUser.id === FOUNDER_ID
+
     if (!existing.exists) {
       await userRef.set({
         ...userData,
-        role: 'civilian',
+        role: isFounder ? 'admin' : 'civilian',
         civilianId: null,
         officerId: null,
         banned: false,
@@ -76,7 +79,10 @@ auth.get('/discord/callback', async (c) => {
         createdAt: now(),
       })
     } else {
-      await userRef.update(userData)
+      await userRef.update({
+        ...userData,
+        ...(isFounder ? { role: 'admin' } : {}),
+      })
     }
 
     if (!member) {

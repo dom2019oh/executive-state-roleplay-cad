@@ -31,6 +31,15 @@ export async function requireOfficer(c: Context, next: Next) {
   if (!['officer', 'dispatcher', 'admin'].includes(user.role)) {
     return c.json({ error: 'Officer access required' }, 403)
   }
+
+  // Admins get full access without needing a department officer profile
+  if (user.role === 'admin') {
+    c.set('officerId', null)
+    c.set('officer', null)
+    await next()
+    return
+  }
+
   if (!user.officerId) return c.json({ error: 'No officer profile found' }, 403)
 
   const officerDoc = await db.collection('officers').doc(user.officerId).get()
