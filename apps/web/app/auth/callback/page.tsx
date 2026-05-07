@@ -3,20 +3,22 @@
 import { useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { setToken } from '@/lib/api'
+import { useAuth } from '@/lib/auth-context'
 
 function CallbackContent() {
   const router = useRouter()
   const params = useSearchParams()
+  const { refetch } = useAuth()
 
   useEffect(() => {
     const token = params.get('token')
-    if (token) {
-      setToken(token)
-      router.replace('/')
-    } else {
+    if (!token) {
       router.replace('/login?error=auth_failed')
+      return
     }
-  }, [params, router])
+    setToken(token)
+    refetch().then(() => router.replace('/'))
+  }, [params, router, refetch])
 
   return (
     <div className="flex items-center justify-center min-h-screen">
