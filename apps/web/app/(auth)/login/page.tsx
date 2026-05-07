@@ -122,7 +122,7 @@ function LoginContent() {
       {/* Made by — fixed bottom center */}
       <div style={{ position: 'fixed', bottom: 20, left: 0, right: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, zIndex: 2 }}>
         <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.7)', fontWeight: 600, letterSpacing: '0.02em' }}>Made by</span>
-        <img src="/buildable-logo.png" alt="" style={{ height: 16, width: 'auto', opacity: 0.85 }} />
+        <img src="/buildable-stack.png" alt="" style={{ height: 16, width: 'auto', opacity: 0.85 }} />
         <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.85)', fontWeight: 700, letterSpacing: '0.01em' }}>Buildable Labs</span>
       </div>
     </div>
