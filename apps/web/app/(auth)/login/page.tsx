@@ -99,6 +99,14 @@ function LoginContent() {
               <span key={d}>{d}</span>
             ))}
           </div>
+
+          {/* Maze Bank */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase' }}>Powered by</span>
+            <img src="/logos/maze-bank-icon.png" alt="" style={{ height: 18, width: 'auto' }} />
+            <span style={{ fontSize: 13, fontWeight: 800, color: '#fff', letterSpacing: '0.06em', textTransform: 'uppercase' }}>Maze Bank</span>
+            <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)', fontWeight: 500, letterSpacing: '0.04em' }}>of Los Santos</span>
+          </div>
         </div>
 
         {/* RIGHT — banner card */}
