@@ -1,0 +1,61 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "civilians",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "lastName",  "order": "ASCENDING" },
+        { "fieldPath": "firstName", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "calls",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "status",    "order": "ASCENDING" },
+        { "fieldPath": "createdAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "officers",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "department", "order": "ASCENDING" },
+        { "fieldPath": "clockedIn",  "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "warrants",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "civilianId", "order": "ASCENDING" },
+        { "fieldPath": "status",     "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "bolos",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "status",   "order": "ASCENDING" },
+        { "fieldPath": "priority", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "arrests",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "civilianId", "order": "ASCENDING" },
+        { "fieldPath": "createdAt",  "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "citations",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "civilianId", "order": "ASCENDING" },
+        { "fieldPath": "createdAt",  "order": "DESCENDING" }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}
