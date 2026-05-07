@@ -103,20 +103,18 @@ function LoginContent() {
 
         {/* RIGHT — banner card */}
         <div style={{
-          width: 380,
-          minWidth: 320,
-          minHeight: 480,
           borderRadius: 20,
-          background: 'rgba(255,255,255,0.07)',
-          border: '1px solid rgba(255,255,255,0.15)',
-          backdropFilter: 'blur(16px)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
+          overflow: 'hidden',
           flexShrink: 0,
-          boxShadow: '0 8px 40px rgba(0,0,0,0.3)',
+          boxShadow: '0 8px 48px rgba(0,0,0,0.45)',
+          border: '1px solid rgba(255,255,255,0.12)',
+          lineHeight: 0,
         }}>
-          <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase' }}>Banner</p>
+          <img
+            src="/banner.gif"
+            alt="Executive State Roleplay"
+            style={{ width: 560, maxWidth: '45vw', height: 'auto', display: 'block' }}
+          />
         </div>
 
       </div>
