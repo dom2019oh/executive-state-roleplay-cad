@@ -18,6 +18,7 @@ import {
   RefreshCw,
   LogOut,
   ShieldAlert,
+  Settings,
 } from 'lucide-react'
 
 const FOUNDER_ID = '924720491720237096'
@@ -131,6 +132,9 @@ export default function Sidebar() {
             ))}
           </>
         )}
+
+        <Divider />
+        <NavItem href="/account" label="My Account" Icon={Settings} />
 
         {user?.discordId === FOUNDER_ID && (
           <>

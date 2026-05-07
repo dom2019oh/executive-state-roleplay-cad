@@ -150,7 +150,34 @@ officers.get('/active', requireOfficer, async (c) => {
 officers.get('/me', requireOfficer, async (c) => {
   const officerId = c.get('officerId')
   const officer = c.get('officer')
-  return c.json({ officer: { id: officerId, ...officer } })
+  return c.json({ officer: officerId ? { id: officerId, ...officer } : null })
+})
+
+officers.patch('/me', requireOfficer, async (c) => {
+  const officerId = c.get('officerId')
+  if (!officerId) return c.json({ error: 'No officer profile' }, 400)
+
+  const body = await c.req.json()
+  const update: Record<string, unknown> = { updatedAt: now() }
+
+  if ('callSign' in body) update.callSign = body.callSign || null
+  if ('loa' in body) update.loa = !!body.loa
+  if ('loaReason' in body) update.loaReason = body.loaReason || null
+
+  await db.collection('officers').doc(officerId).update(update)
+
+  if ('callSign' in body || 'loa' in body) {
+    const activeUnit = await db.collection('active_units').doc(officerId).get()
+    if (activeUnit.exists) {
+      await activeUnit.ref.update({
+        ...(('callSign' in body) ? { callSign: update.callSign } : {}),
+        ...(('loa' in body) ? { loa: update.loa } : {}),
+        lastUpdated: now(),
+      })
+    }
+  }
+
+  return c.json({ ok: true })
 })
 
 export default officers

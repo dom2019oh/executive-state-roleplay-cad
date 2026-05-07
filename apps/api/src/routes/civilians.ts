@@ -141,7 +141,9 @@ civilians.patch('/:id', async (c) => {
   if (!isOwner && !isOfficer) return c.json({ error: 'Forbidden' }, 403)
 
   const body = await c.req.json()
-  const allowed = ['address', 'phone', 'occupation', 'notes', 'flags', 'driversLicense', 'weaponLicense', 'mugshot']
+  const ownerFields = ['address', 'phone', 'occupation', 'height', 'weight', 'hairColor', 'eyeColor', 'driversLicense']
+  const officerFields = ['notes', 'flags', 'weaponLicense', 'mugshot', 'ethnicity']
+  const allowed = isOwner ? [...ownerFields, ...(isOfficer ? officerFields : [])] : officerFields
 
   const update: Record<string, unknown> = { updatedAt: now() }
   for (const key of allowed) {
