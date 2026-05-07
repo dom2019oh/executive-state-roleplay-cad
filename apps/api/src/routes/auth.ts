@@ -1,15 +1,14 @@
 import { Hono } from 'hono'
 import { db, now } from '../lib/firebase'
-import { exchangeCode, getDiscordUser, getGuildMember } from '../lib/discord'
+import { exchangeCode, getDiscordUser, getGuildMember, refreshDiscordToken } from '../lib/discord'
 import { randomBytes } from 'crypto'
 
 const auth = new Hono()
 
 const REDIRECT_URI = `${process.env.API_URL}/auth/discord/callback`
-const SESSION_TTL = 7 * 24 * 60 * 60 * 1000 // 7 days
+const SESSION_TTL = 365 * 24 * 60 * 60 * 1000 // 1 year
 const IS_DEV = !process.env.FIREBASE_PRIVATE_KEY || process.env.FIREBASE_PRIVATE_KEY === 'PLACEHOLDER'
 
-// Dev-only instant login — bypasses Discord OAuth
 auth.get('/dev-login', async (c) => {
   if (!IS_DEV) return c.json({ error: 'Not available in production' }, 403)
   return c.redirect(`${process.env.WEB_URL}/auth/callback?token=dev-token`)
@@ -89,6 +88,9 @@ auth.get('/discord/callback', async (c) => {
       userId: discordUser.id,
       createdAt: now(),
       expiresAt: now() + SESSION_TTL,
+      discordAccessToken: tokens.access_token,
+      discordRefreshToken: tokens.refresh_token,
+      discordTokenExpiry: now() + (tokens.expires_in * 1000),
     })
 
     return c.redirect(`${process.env.WEB_URL}/auth/callback?token=${sessionToken}`)
@@ -109,14 +111,52 @@ auth.get('/me', async (c) => {
   if (!token) return c.json({ user: null })
 
   const sessionDoc = await db.collection('sessions').doc(token).get()
-  if (!sessionDoc.exists || sessionDoc.data()!.expiresAt < Date.now()) {
+  if (!sessionDoc.exists) return c.json({ user: null })
+
+  const session = sessionDoc.data()!
+  if (session.expiresAt < Date.now()) {
+    await sessionDoc.ref.delete()
     return c.json({ user: null })
   }
 
-  const userDoc = await db.collection('users').doc(sessionDoc.data()!.userId).get()
+  // Re-verify guild membership if Discord token has expired — refresh it silently
+  if (session.discordTokenExpiry && session.discordTokenExpiry < Date.now() && session.discordRefreshToken) {
+    try {
+      const newTokens = await refreshDiscordToken(session.discordRefreshToken)
+      const member = await getGuildMember(newTokens.access_token, process.env.DISCORD_GUILD_ID!)
+
+      // Update session with new tokens
+      await sessionDoc.ref.update({
+        discordAccessToken: newTokens.access_token,
+        discordRefreshToken: newTokens.refresh_token,
+        discordTokenExpiry: Date.now() + (newTokens.expires_in * 1000),
+      })
+
+      // Update guild membership status on user
+      await db.collection('users').doc(session.userId).update({
+        guildMember: !!member,
+        guildRoles: member?.roles ?? [],
+        guildNickname: member?.nick ?? null,
+        guildBoostingSince: member?.premium_since ?? null,
+      })
+
+      // If they left the guild, invalidate the session
+      if (!member) {
+        await sessionDoc.ref.delete()
+        return c.json({ user: null })
+      }
+    } catch {
+      // Token refresh failed — let the existing session continue until expiry
+    }
+  }
+
+  const userDoc = await db.collection('users').doc(session.userId).get()
   if (!userDoc.exists) return c.json({ user: null })
 
-  return c.json({ user: { id: userDoc.id, ...userDoc.data() } })
+  const user = userDoc.data()!
+  if (!user.guildMember) return c.json({ user: null })
+
+  return c.json({ user: { id: userDoc.id, ...user } })
 })
 
 export default auth
