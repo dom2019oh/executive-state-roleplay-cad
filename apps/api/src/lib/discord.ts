@@ -10,7 +10,11 @@ export async function getDiscordUser(accessToken: string) {
     username: string
     global_name: string | null
     avatar: string | null
+    banner: string | null
+    accent_color: number | null
     email?: string
+    premium_type?: number // 0=None, 1=Classic, 2=Nitro, 3=Basic
+    public_flags?: number // badge bitfield
   }>
 }
 
@@ -23,6 +27,10 @@ export async function getGuildMember(accessToken: string, guildId: string) {
   return res.json() as Promise<{
     roles: string[]
     nick: string | null
+    avatar: string | null
+    joined_at: string
+    premium_since: string | null
+    communication_disabled_until: string | null
   }>
 }
 

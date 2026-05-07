@@ -48,8 +48,21 @@ auth.get('/discord/callback', async (c) => {
       discordAvatar: discordUser.avatar
         ? `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.png`
         : null,
+      discordBanner: discordUser.banner
+        ? `https://cdn.discordapp.com/banners/${discordUser.id}/${discordUser.banner}.png`
+        : null,
+      discordAccentColor: discordUser.accent_color ?? null,
+      discordEmail: discordUser.email ?? null,
+      discordNitro: discordUser.premium_type ?? 0,
+      discordBadges: discordUser.public_flags ?? 0,
       guildMember: !!member,
       guildRoles: member?.roles ?? [],
+      guildNickname: member?.nick ?? null,
+      guildAvatar: member?.avatar
+        ? `https://cdn.discordapp.com/guilds/${process.env.DISCORD_GUILD_ID}/users/${discordUser.id}/avatars/${member.avatar}.png`
+        : null,
+      guildJoinedAt: member?.joined_at ?? null,
+      guildBoostingSince: member?.premium_since ?? null,
       lastLogin: now(),
     }
 

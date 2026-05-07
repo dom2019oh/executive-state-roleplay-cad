@@ -9,7 +9,17 @@ interface CadUser {
   discordUsername: string
   discordDisplayName: string
   discordAvatar: string | null
+  discordBanner: string | null
+  discordAccentColor: number | null
+  discordEmail: string | null
+  discordNitro: number
+  discordBadges: number
   guildMember: boolean
+  guildNickname: string | null
+  guildAvatar: string | null
+  guildJoinedAt: string | null
+  guildBoostingSince: string | null
+  guildRoles: string[]
   role: string
   civilianId: string | null
   officerId: string | null
