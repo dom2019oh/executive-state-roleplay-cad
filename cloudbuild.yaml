@@ -1,0 +1,12 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - build
+      - '-t'
+      - 'us-central1-docker.pkg.dev/executive-state-cad/cad-api/cad-api:latest'
+      - '-f'
+      - 'apps/api/Dockerfile'
+      - '.'
+
+images:
+  - 'us-central1-docker.pkg.dev/executive-state-cad/cad-api/cad-api:latest'

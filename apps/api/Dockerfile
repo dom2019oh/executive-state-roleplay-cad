@@ -8,7 +8,7 @@ COPY packages/shared/src ./packages/shared/src/
 
 # Copy API
 COPY apps/api/package.json ./apps/api/
-RUN bun install --frozen-lockfile
+RUN bun install
 
 COPY apps/api/src ./apps/api/src/
 

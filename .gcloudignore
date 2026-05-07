@@ -1,0 +1,6 @@
+.gcloudignore
+.git
+node_modules
+apps/web
+apps/api/node_modules
+packages/shared/node_modules
