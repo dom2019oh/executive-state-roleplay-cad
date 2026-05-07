@@ -13,6 +13,7 @@ import citations from './routes/records/citations'
 import warrants from './routes/records/warrants'
 import bolos from './routes/records/bolos'
 import incidents from './routes/records/incidents'
+import admin from './routes/admin'
 
 const app = new Hono()
 
@@ -47,6 +48,7 @@ app.route('/records/citations', citations)
 app.route('/records/warrants', warrants)
 app.route('/records/bolos', bolos)
 app.route('/records/incidents', incidents)
+app.route('/admin', admin)
 
 app.onError((err, c) => {
   console.error(err)

@@ -17,7 +17,10 @@ import {
   AlertTriangle,
   RefreshCw,
   LogOut,
+  ShieldAlert,
 } from 'lucide-react'
+
+const FOUNDER_ID = '924720491720237096'
 
 const NAV_TOP = [
   { href: '/dashboard', label: 'Home', Icon: Home },
@@ -129,9 +132,16 @@ export default function Sidebar() {
           </>
         )}
 
+        {user?.discordId === FOUNDER_ID && (
+          <>
+            <Divider />
+            <SectionLabel label="Founder" />
+            <NavItem href="/admin" label="User Registry" Icon={ShieldAlert} />
+          </>
+        )}
+
         <Divider />
 
-        {/* Maze Bank */}
         {/* Maze Bank — custom icon */}
         <Link
           href="/maze-bank"
