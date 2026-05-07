@@ -30,6 +30,9 @@ function LoginContent() {
       {/* overlay */}
       <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.52)', backdropFilter: 'blur(2px)', zIndex: 0 }} />
 
+      {/* floating top line */}
+      <div style={{ position: 'fixed', top: 18, left: '50%', transform: 'translateX(-50%)', width: '40%', height: 3, borderRadius: 999, background: 'rgba(255,255,255,0.35)', zIndex: 2 }} />
+
       {/* Two-column layout */}
       <div style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '0 80px', gap: 48 }}>
 
